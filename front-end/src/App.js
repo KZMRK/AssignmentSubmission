@@ -6,7 +6,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Home from "./components/home/Home";
 import Login from "./components/login/Login";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
-import AssignmentView from "./AssignmentView";
+import AssignmentView from "./components/assignmentView/AssignmentView";
 
 function App() {
     return (
