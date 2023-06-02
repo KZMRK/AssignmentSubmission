@@ -1,6 +1,4 @@
 import './App.css';
-import {useEffect} from "react";
-import {useLocalState} from "./util/useLocalStorage";
 import {Route, Routes} from "react-router";
 import Dashboard from "./components/dashboard/Dashboard";
 import Home from "./components/home/Home";
