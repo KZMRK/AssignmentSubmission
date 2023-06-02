@@ -2,10 +2,10 @@ import './App.css';
 import {useEffect} from "react";
 import {useLocalState} from "./util/useLocalStorage";
 import {Route, Routes} from "react-router";
-import Dashboard from "./Dashboard";
-import Home from "./Home";
-import Login from "./Login";
-import PrivateRoute from "./PrivateRoute";
+import Dashboard from "./components/dashboard/Dashboard";
+import Home from "./components/home/Home";
+import Login from "./components/login/Login";
+import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import AssignmentView from "./AssignmentView";
 
 function App() {
