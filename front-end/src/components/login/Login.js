@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import {useLocalState} from "../util/useLocalStorage";
-import {Navigate} from "react-router";
+import {useLocalState} from "../../util/useLocalStorage";
 
 const Login = () => {
 

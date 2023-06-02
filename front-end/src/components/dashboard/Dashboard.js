@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
+import { useLocalState } from "../../util/useLocalStorage";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
@@ -48,7 +48,7 @@ const Dashboard = () => {
                 {assignments ? (
                     assignments.map((assignment) => (
                         <div>
-                            <Link to={`assignments/{assignment.id}`}>
+                            <Link to={`/assignments/${assignment.id}`}>
                                 Assignment ID: {assignment.id}
                             </Link>
                         </div>

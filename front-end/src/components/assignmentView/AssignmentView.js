@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
+import { useLocalState } from "../../util/useLocalStorage";
 
 const AssignmentView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
