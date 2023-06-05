@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import { Link } from "react-router-dom";
 import ajax from "../../services/fetchService";
+import { Card, Button, Row, Col, Container } from "react-bootstrap";
 
 const Dashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
@@ -20,23 +21,53 @@ const Dashboard = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className="mt-3">
+            <Container>
+                <Button
+                    className="mb-4"
+                    size="lg"
+                    onClick={() => createAssignment()}
+                >
+                    Submit new assignment
+                </Button>
                 {assignments ? (
-                    assignments.map((assignment) => (
-                        <div key={assignment.id}>
-                            <Link to={`/assignments/${assignment.id}`}>
-                                Assignment ID: {assignment.id}
-                            </Link>
-                        </div>
-                    ))
+                    <Row xs={1} md={2} lg={3} xl={4} className="g-2 ">
+                        {assignments.map((assignment) => (
+                            <Col key={assignment.id}>
+                                <Card
+                                    className="h-100"
+                                    style={{ width: "18rem" }}
+                                >
+                                    <Card.Body className="d-flex flex-column justify-content-around">
+                                        <Card.Title>
+                                            Assignment {assignment.id}
+                                        </Card.Title>
+                                        <Card.Subtitle className="mb-2 text-muted">
+                                            {assignment.status}
+                                        </Card.Subtitle>
+                                        <Card.Text>
+                                            <p>
+                                                GitHub URL:{" "}
+                                                {assignment.githubUrl}
+                                            </p>
+                                            <p>Branch: {assignment.branch}</p>
+                                        </Card.Text>
+                                        <Button
+                                            onClick={() =>
+                                                (window.location.href = `/assignments/${assignment.id}`)
+                                            }
+                                        >
+                                            Edit
+                                        </Button>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
                 ) : (
                     <></>
                 )}
-                <button onClick={() => createAssignment()}>
-                    Submit new assignment
-                </button>
-            </div>
+            </Container>
         </div>
     );
 };
