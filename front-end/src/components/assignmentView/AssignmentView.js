@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Badge, Button, Col, Container, DropdownButton, Form, Row, Dropdown, ButtonGroup} from "react-bootstrap";
@@ -6,8 +6,13 @@ import {Badge, Button, Col, Container, DropdownButton, Form, Row, Dropdown, Butt
 const AssignmentView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const assignmentId = window.location.href.split("/assignments/")[1];
-    const [assignment, setAssignment] = useState(null);
-    const [assignmentEnums, setAssignmentEnums] = useState([])
+    const [assignment, setAssignment] = useState({
+        status: null
+        }
+    );
+    const [assignmentEnums, setAssignmentEnums] = useState([]);
+    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
+    const prevAssignment = useRef(assignment);
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -16,6 +21,14 @@ const AssignmentView = () => {
     }
 
     function save() {
+        if (assignment.status === assignmentStatuses[0].status) {
+            updateAssignment("status", assignmentStatuses[1].status);
+        } else {
+            persist();
+        }
+    }
+
+    function persist() {
         ajax(`/api/assignments/${assignmentId}`, "PUT", jwt, assignment).then(
             (assignment) => {
                 setAssignment(assignment);
@@ -24,11 +37,18 @@ const AssignmentView = () => {
     }
 
     useEffect(() => {
+        if (prevAssignment.current.status !== assignment.status) {
+            persist()
+        }
+        prevAssignment.current = assignment;
+    }, [assignment])
+
+    useEffect(() => {
         ajax(`/api/assignments/${assignmentId}`, "GET", jwt)
             .then((assignmentResponse) => {
                 setAssignment(assignmentResponse.assignment);
                 setAssignmentEnums(assignmentResponse.assignmentEnums);
-
+                setAssignmentStatuses(assignmentResponse.assignmentStatusEnums)
             });
     }, []);
 
@@ -38,7 +58,9 @@ const AssignmentView = () => {
                 <>
                     <Row className="align-items-center">
                         <Col>
-                            <h1>Assignment {assignmentId}</h1>
+                            <h1>
+                                Assignment {assignment.number ? assignment.number : ""}
+                            </h1>
                         </Col>
                         <Col>
                             <Badge pill bg="info" style={{ fontSize: "1em" }}>
@@ -46,7 +68,7 @@ const AssignmentView = () => {
                             </Badge>{' '}
                         </Col>
                     </Row>
-                    <Form.Group as={Row} className="my-4" controlId="formPlaintextEmail">
+                    <Form.Group as={Row} className="my-4">
                         <Form.Label column sm="3" md="2">
                             Assignment Number:
                         </Form.Label>
@@ -55,17 +77,20 @@ const AssignmentView = () => {
                                 as={ButtonGroup}
                                 id={'assignmentName'}
                                 variant={"info"}
-                                title="Assignment 1"
+                                title={assignment.number ? `Assignment ${assignment.number}` : "Select an Assignment"}
+                                onSelect={(selectedElement) => {
+                                    updateAssignment("number", selectedElement);
+                                }}
                             >
                                 {assignmentEnums.map((assignmentEnum) => (
-                                    <Dropdown.Item eventKey={assignmentEnum.assignmentNum}>
-                                        {assignmentEnum.assignmentName}
+                                    <Dropdown.Item key={assignmentEnum.assignmentNum} eventKey={assignmentEnum.assignmentNum}>
+                                        {assignmentEnum.assignmentNum}
                                     </Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="my-4" controlId="formPlaintextEmail">
+                    <Form.Group as={Row} className="my-4">
                         <Form.Label column sm="3" md="2">
                             GitHub URL:
                         </Form.Label>
@@ -83,7 +108,7 @@ const AssignmentView = () => {
                             />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
+                    <Form.Group as={Row} className="mb-3">
                         <Form.Label column sm="3" md="2">
                             Branch:
                         </Form.Label>
