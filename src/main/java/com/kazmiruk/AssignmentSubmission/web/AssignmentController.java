@@ -2,6 +2,7 @@ package com.kazmiruk.AssignmentSubmission.web;
 
 import com.kazmiruk.AssignmentSubmission.domain.Assignment;
 import com.kazmiruk.AssignmentSubmission.domain.User;
+import com.kazmiruk.AssignmentSubmission.dto.AssignmentResponseDto;
 import com.kazmiruk.AssignmentSubmission.service.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,8 @@ public class AssignmentController {
     @GetMapping("{assignmentId}")
     public ResponseEntity<?> getAssignment(@PathVariable Long assignmentId, @AuthenticationPrincipal User user) {
         Optional<Assignment> assignmentOpt = assignmentService.findById(assignmentId);
-        return ResponseEntity.ok(assignmentOpt.orElse(new Assignment()));
+        AssignmentResponseDto assignmentResponseDto = new AssignmentResponseDto(assignmentOpt.orElse(new Assignment()));
+        return ResponseEntity.ok(assignmentResponseDto);
     }
 
     @PutMapping("{assignmentId}")
