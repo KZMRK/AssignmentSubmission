@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
-import { Link } from "react-router-dom";
 import ajax from "../../services/fetchService";
 import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
 
 const Dashboard = () => {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const [jwt, seJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
 
     useEffect(() => {
