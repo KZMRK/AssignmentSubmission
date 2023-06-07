@@ -30,9 +30,9 @@ const Dashboard = () => {
                     Submit new assignment
                 </Button>
                 {assignments ? (
-                    <Row xs={1} md={2} lg={3} xl={4} className="g-2 ">
+                    <Row xs={1} md={2} lg={3} xl={4} className="g-2">
                         {assignments.map((assignment) => (
-                            <Col key={assignment.id}>
+                            <Col className="d-flex justify-content-center" key={assignment.id}>
                                 <Card
                                     className="h-100"
                                     style={{ width: "18rem" }}
