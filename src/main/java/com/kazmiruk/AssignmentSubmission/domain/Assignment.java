@@ -21,5 +21,6 @@ public class Assignment {
     private String codeReviewVideoUrl;
     @ManyToOne(optional = false)
     private User user;
-    // TODO: private User assignedTo;
+    @ManyToOne
+    private User codeReviewer;
 }

@@ -1,5 +1,13 @@
 .assignment-wrapper {
+    margin-top: 4em;
     border: 1px dashed #b0b0b0;
     padding: 2em;
     border-radius: 1em;
+}
+.assignment-wrapper-title {
+    margin-top: -1.9em!important;
+    background-color: white!important;
+    width: min-content!important;
+    white-space: nowrap!important;
+    padding: 0 0.5em;
 }
