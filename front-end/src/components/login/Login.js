@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Button, Col, Container, Row, Form} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const [jwt, setJwt] = useLocalState("", "jwt");
+    const navigate = useNavigate();
 
     function sendLoginRequest() {
         const reqBody = {
@@ -32,7 +34,7 @@ const Login = () => {
         )
         .then(([body, headers]) => {
             setJwt(headers.get("authorization"));
-            window.location.href = "dashboard";
+            navigate("dashboard");
         }).catch((message) => {
             alert(message)
         });
@@ -86,7 +88,7 @@ const Login = () => {
                             variant="secondary"
                             type="button"
                             id="submit"
-                            onClick={() => window.location.href = "/"}
+                            onClick={() => navigate("/")}
                         >
                             Exit
                         </Button>

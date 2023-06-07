@@ -4,10 +4,12 @@ import ajax from "../../services/fetchService";
 import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import StatusBadge from "../statusBadge/StatusBadge";
+import {useNavigate} from "react-router-dom";
 
 function CodeReviewerDashboard(props) {
     const [jwt, seJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
@@ -23,7 +25,7 @@ function CodeReviewerDashboard(props) {
     }
 
     function editReview(assignment) {
-        window.location.href = `/assignments/${assignment.id}`;
+        navigate(`/assignments/${assignment.id}`);
     }
 
     return (
@@ -139,9 +141,7 @@ function CodeReviewerDashboard(props) {
                                             </Card.Text>
                                             <Button
                                                 variant="secondary"
-                                                onClick={() =>
-                                                    window.location.href=`/assignments/${assignment.id}`
-                                                }
+                                                onClick={() => navigate(`/assignments/${assignment.id}`)}
                                             >
                                                 View
                                             </Button>

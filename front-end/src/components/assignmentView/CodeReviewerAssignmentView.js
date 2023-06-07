@@ -12,7 +12,7 @@ import {
     Dropdown,
     ButtonGroup,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { Navigate } from "react-router";
 
 const CodeReviewerAssignmentView = () => {
@@ -24,6 +24,7 @@ const CodeReviewerAssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
+    const navigate = useNavigate();
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -37,7 +38,7 @@ const CodeReviewerAssignmentView = () => {
         } else {
             persist();
         }
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
     }
 
     function persist() {

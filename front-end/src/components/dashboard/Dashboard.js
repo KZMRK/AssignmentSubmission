@@ -3,10 +3,12 @@ import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
 import StatusBadge from "../statusBadge/StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const [jwt, seJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         ajax("api/assignments", "GET", jwt).then((assignmentsData) => {
@@ -16,7 +18,7 @@ const Dashboard = () => {
 
     function createAssignment() {
         ajax("api/assignments", "POST", jwt).then((assignment) => {
-            window.location.href = `assignments/${assignment.id}`;
+            navigate(`assignments/${assignment.id}`);
         });
     }
 
@@ -53,9 +55,7 @@ const Dashboard = () => {
                                         </Card.Text>
                                         <Button
                                             variant="secondary"
-                                            onClick={() =>
-                                                (window.location.href = `/assignments/${assignment.id}`)
-                                            }
+                                            onClick={() => navigate(`/assignments/${assignment.id}`)}
                                         >
                                             Edit
                                         </Button>
