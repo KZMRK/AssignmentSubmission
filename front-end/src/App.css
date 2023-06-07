@@ -11,3 +11,15 @@
     white-space: nowrap!important;
     padding: 0 0.5em;
 }
+
+.bg-complete {
+    background-color: #00DFA2;
+}
+
+.bg-needs-update {
+    background-color: #FF0060;
+}
+
+.bg-submitted {
+    background-color: #0079FF;
+}

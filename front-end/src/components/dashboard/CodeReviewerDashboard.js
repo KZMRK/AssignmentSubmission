@@ -3,6 +3,7 @@ import {useLocalState} from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import jwt_decode from "jwt-decode";
+import StatusBadge from "../statusBadge/StatusBadge";
 
 function CodeReviewerDashboard(props) {
     const [jwt, seJwt] = useLocalState("", "jwt");
@@ -44,9 +45,7 @@ function CodeReviewerDashboard(props) {
                                                 Assignment #{assignment.number}
                                             </Card.Title>
                                             <Card.Subtitle className="my-2 text-muted">
-                                                <Badge pill bg="info" style={{ fontSize: "1em" }}>
-                                                    {assignment.status}
-                                                </Badge>{' '}
+                                                <StatusBadge text={assignment.status} />
                                             </Card.Subtitle>
                                             <Card.Text>
                                                 <p>

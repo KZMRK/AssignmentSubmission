@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
+import StatusBadge from "../statusBadge/StatusBadge";
 
 const Dashboard = () => {
     const [jwt, seJwt] = useLocalState("", "jwt");
@@ -42,9 +43,7 @@ const Dashboard = () => {
                                             Assignment #{assignment.number}
                                         </Card.Title>
                                         <Card.Subtitle className="my-2 text-muted">
-                                            <Badge pill bg="info" style={{ fontSize: "1em" }}>
-                                                {assignment.status}
-                                            </Badge>{' '}
+                                            <StatusBadge text={assignment.status} />
                                         </Card.Subtitle>
                                         <Card.Text>
                                             <p>
