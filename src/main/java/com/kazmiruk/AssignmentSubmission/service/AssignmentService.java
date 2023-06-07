@@ -19,9 +19,21 @@ public class AssignmentService {
     public Assignment save(User user) {
         Assignment assignment = new Assignment();
         assignment.setStatus(AssignmentStatusEnum.PENDING_SUBMISSION.getStatus());
+        assignment.setNumber(findNextAssignmentToSubmit(user));
         assignment.setUser(user);
 
         return assignmentRepository.save(assignment);
+    }
+
+    private Integer findNextAssignmentToSubmit(User user) {
+        Set<Assignment> assignments = assignmentRepository.findByUser(user);
+        if (assignments == null) {
+            return 1;
+        }
+        return assignments.stream()
+                .mapToInt(Assignment::getNumber)
+                .max()
+                .orElse(0) + 1;
     }
 
     public Set<Assignment> findByUser(User user) {

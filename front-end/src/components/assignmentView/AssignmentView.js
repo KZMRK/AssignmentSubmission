@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef  } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Badge, Button, Col, Container, DropdownButton, Form, Row, Dropdown, ButtonGroup} from "react-bootstrap";
+import {Link} from "react-router-dom";
+import {Navigate} from "react-router";
 
 const AssignmentView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
@@ -26,6 +28,7 @@ const AssignmentView = () => {
         } else {
             persist();
         }
+        window.location.href="/dashboard"
     }
 
     function persist() {
@@ -53,7 +56,7 @@ const AssignmentView = () => {
     }, []);
 
     return (
-        <Container className="mt-5">
+        <Container className="mt-5 justify-content-center" style={{width: "40rem"}}>
             {assignment ? (
                 <>
                     <Row className="align-items-center">
@@ -62,17 +65,19 @@ const AssignmentView = () => {
                                 Assignment {assignment.number ? assignment.number : ""}
                             </h1>
                         </Col>
-                        <Col>
+                        <Col className="text-end">
                             <Badge pill bg="info" style={{ fontSize: "1em" }}>
                                 {assignment.status}
                             </Badge>{' '}
                         </Col>
                     </Row>
                     <Form.Group as={Row} className="my-4">
-                        <Form.Label column sm="3" md="2">
-                            Assignment Number:
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
+                        <Col>
+                            <Form.Label column>
+                                Assignment Number:
+                            </Form.Label>
+                        </Col>
+                        <Col sm="8" md="8" lg="8">
                             <DropdownButton
                                 as={ButtonGroup}
                                 id={'assignmentName'}
@@ -90,11 +95,13 @@ const AssignmentView = () => {
                             </DropdownButton>
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="my-4">
-                        <Form.Label column sm="3" md="2">
-                            GitHub URL:
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
+                    <Form.Group as={Row} className="my-4 align-items-center">
+                        <Col>
+                            <Form.Label className="mb-0">
+                                GitHub URL:
+                            </Form.Label>
+                        </Col>
+                        <Col sm="8" md="8" lg="8">
                             <Form.Control
                                 type="url"
                                 id="githubUrl"
@@ -108,11 +115,13 @@ const AssignmentView = () => {
                             />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3" md="2">
-                            Branch:
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
+                    <Form.Group as={Row} className="mb-3 align-items-center">
+                        <Col>
+                            <Form.Label className="mb-0">
+                                Branch:
+                            </Form.Label>
+                        </Col>
+                        <Col sm="8" md="8" lg="8">
                             <Form.Control
                                 type="text"
                                 id="branch"

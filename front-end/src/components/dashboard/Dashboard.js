@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import { Link } from "react-router-dom";
 import ajax from "../../services/fetchService";
-import { Card, Button, Row, Col, Container } from "react-bootstrap";
+import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
 
 const Dashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
@@ -40,19 +40,21 @@ const Dashboard = () => {
                                 >
                                     <Card.Body className="d-flex flex-column justify-content-around">
                                         <Card.Title>
-                                            Assignment {assignment.id}
+                                            Assignment #{assignment.number}
                                         </Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">
-                                            {assignment.status}
+                                        <Card.Subtitle className="my-2 text-muted">
+                                            <Badge pill bg="info" style={{ fontSize: "1em" }}>
+                                                {assignment.status}
+                                            </Badge>{' '}
                                         </Card.Subtitle>
                                         <Card.Text>
                                             <p>
-                                                GitHub URL:{" "}
-                                                {assignment.githubUrl}
+                                                <b>GitHub URL: </b>{assignment.githubUrl}
                                             </p>
-                                            <p>Branch: {assignment.branch}</p>
+                                            <p><b>Branch:</b> {assignment.branch}</p>
                                         </Card.Text>
                                         <Button
+                                            variant="secondary"
                                             onClick={() =>
                                                 (window.location.href = `/assignments/${assignment.id}`)
                                             }
