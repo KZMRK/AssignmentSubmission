@@ -21,6 +21,10 @@ function CodeReviewerDashboard(props) {
         );
     }
 
+    function editReview(assignment) {
+        window.location.href = `/assignments/${assignment.id}`;
+    }
+
     return (
         <div className="mt-3">
             <Container>
@@ -95,10 +99,10 @@ function CodeReviewerDashboard(props) {
                                             <Button
                                                 variant="secondary"
                                                 onClick={() =>
-                                                    claimAssignment(assignment)
+                                                    editReview(assignment)
                                                 }
                                             >
-                                                Claim
+                                                Edit
                                             </Button>
                                         </Card.Body>
                                     </Card>
@@ -111,9 +115,9 @@ function CodeReviewerDashboard(props) {
                 </div>
                 <div className="assignment-wrapper needs-update">
                     <div className="h3 mb-4 assignment-wrapper-title">Needs Update</div>
-                    {assignments && assignments.some(assignment => assignment.status === "Needs update") ? (
+                    {assignments && assignments.some(assignment => assignment.status === "Needs Update") ? (
                         <Row xs={1} md={2} lg={3} xl={4} className="g-2 ">
-                            {assignments.filter((assignment) => assignment.status === "Needs update").map((assignment) => (
+                            {assignments.filter((assignment) => assignment.status === "Needs Update").map((assignment) => (
                                 <Col className="d-flex justify-content-center" key={assignment.id}>
                                     <Card
                                         className="h-100"
@@ -137,10 +141,10 @@ function CodeReviewerDashboard(props) {
                                             <Button
                                                 variant="secondary"
                                                 onClick={() =>
-                                                    claimAssignment(assignment)
+                                                    window.location.href=`/assignments/${assignment.id}`
                                                 }
                                             >
-                                                Claim
+                                                View
                                             </Button>
                                         </Card.Body>
                                     </Card>

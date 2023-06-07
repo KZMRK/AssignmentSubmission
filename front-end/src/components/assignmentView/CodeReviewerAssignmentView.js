@@ -15,7 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import { Navigate } from "react-router";
 
-const AssignmentView = () => {
+const CodeReviewerAssignmentView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const assignmentId = window.location.href.split("/assignments/")[1];
     const [assignment, setAssignment] = useState({
@@ -31,9 +31,9 @@ const AssignmentView = () => {
         setAssignment(newAssignment);
     }
 
-    function save() {
-        if (assignment.status === assignmentStatuses[0].status) {
-            updateAssignment("status", assignmentStatuses[1].status);
+    function save(status) {
+        if (status && assignment.status !== status) {
+            updateAssignment("status", status);
         } else {
             persist();
         }
@@ -85,35 +85,6 @@ const AssignmentView = () => {
                             </Badge>{" "}
                         </Col>
                     </Row>
-                    <Form.Group as={Row} className="my-4">
-                        <Col>
-                            <Form.Label column>Assignment Number:</Form.Label>
-                        </Col>
-                        <Col sm="8" md="8" lg="8">
-                            <DropdownButton
-                                as={ButtonGroup}
-                                id={"assignmentName"}
-                                variant={"info"}
-                                title={
-                                    assignment.number
-                                        ? `Assignment ${assignment.number}`
-                                        : "Select an Assignment"
-                                }
-                                onSelect={(selectedElement) => {
-                                    updateAssignment("number", selectedElement);
-                                }}
-                            >
-                                {assignmentEnums.map((assignmentEnum) => (
-                                    <Dropdown.Item
-                                        key={assignmentEnum.assignmentNum}
-                                        eventKey={assignmentEnum.assignmentNum}
-                                    >
-                                        {assignmentEnum.assignmentNum}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
-                    </Form.Group>
                     <Form.Group as={Row} className="my-4 align-items-center">
                         <Col>
                             <Form.Label className="mb-0">
@@ -130,12 +101,7 @@ const AssignmentView = () => {
                                         ? assignment.githubUrl
                                         : ""
                                 }
-                                onChange={(event) =>
-                                    updateAssignment(
-                                        "githubUrl",
-                                        event.target.value
-                                    )
-                                }
+                                readOnly
                             />
                         </Col>
                     </Form.Group>
@@ -151,36 +117,60 @@ const AssignmentView = () => {
                                 value={
                                     assignment.branch ? assignment.branch : ""
                                 }
-                                onChange={(event) =>
+                                readOnly
+                            />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="mb-3 align-items-center">
+                        <Col>
+                            <Form.Label className="mb-0">
+                                Video Review URL:
+                            </Form.Label>
+                        </Col>
+                        <Col sm="8" md="8" lg="8">
+                            <Form.Control
+                                type="url"
+                                id="videoReviewURL"
+                                placeholder="https://screencast-o-matic.com/smth"
+                                value={
+                                    assignment.codeReviewVideoUrl
+                                        ? assignment.codeReviewVideoUrl
+                                        : ""
+                                }
+                                onChange={(e) =>
                                     updateAssignment(
-                                        "branch",
-                                        event.target.value
+                                        "codeReviewVideoUrl",
+                                        e.target.value
                                     )
                                 }
                             />
                         </Col>
                     </Form.Group>
-
-                    {assignment.status === "Complete" ?
-                        (<>
-                            <Form.Group as={Row} className="mb-3 align-items-center">
-                                <Col>
-                                    <Form.Label className="mb-0">Code Review Video URL:</Form.Label>
-                                </Col>
-                                <Col sm="8" md="8" lg="8">
-                                    <Form.Control
-                                        type="url"
-                                        id="codeReviewVideoUrl"
-                                        value={assignment.codeReviewVideoUrl}
-                                        readOnly
-                                    />
-                                </Col>
-                            </Form.Group>
-                        </>):
-                        (<Button size="lg" onClick={() => save(assignment)}>
-                            Submit assignment
-                        </Button>)
-                    }
+                    <Button
+                        size="lg"
+                        onClick={() => save(assignmentStatuses[4].status)}
+                    >
+                        Complete Review
+                    </Button>
+                    {assignment.status === "Needs Update" ? (
+                        <Button
+                            className="mx-2"
+                            variant="secondary"
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[2].status)}
+                        >
+                            Re-Claim
+                        </Button>
+                    ) : (
+                        <Button
+                            className="mx-2"
+                            variant="danger"
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[3].status)}
+                        >
+                            Reject Assignment
+                        </Button>
+                    )}
                 </>
             ) : (
                 <></>
@@ -189,4 +179,4 @@ const AssignmentView = () => {
     );
 };
 
-export default AssignmentView;
+export default CodeReviewerAssignmentView;
