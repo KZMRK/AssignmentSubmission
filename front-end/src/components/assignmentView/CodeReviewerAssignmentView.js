@@ -24,7 +24,7 @@ const CodeReviewerAssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
-    const navigate = useNavigate();
+
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -38,7 +38,7 @@ const CodeReviewerAssignmentView = () => {
         } else {
             persist();
         }
-        navigate("/dashboard");
+        window.location.href="/dashboard";
     }
 
     function persist() {

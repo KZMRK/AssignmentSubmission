@@ -12,6 +12,8 @@ const StatusBadge = (props) => {
                 return "needs-update";
             case "Submitted":
                 return "submitted"
+            case "Pending Submissions":
+                return "pending-submissions"
             default:
                 return "info"
         }

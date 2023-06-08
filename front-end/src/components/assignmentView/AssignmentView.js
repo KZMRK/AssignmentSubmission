@@ -24,7 +24,6 @@ const AssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
-    const navigate = useNavigate();
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -32,13 +31,13 @@ const AssignmentView = () => {
         setAssignment(newAssignment);
     }
 
-    function save() {
-        if (assignment.status === assignmentStatuses[0].status) {
-            updateAssignment("status", assignmentStatuses[1].status);
+    function save(status) {
+        if (status && assignment.status !== status) {
+            updateAssignment("status", status);
         } else {
             persist();
         }
-        navigate("/dashboard");
+        window.location.href="/dashboard";
     }
 
     function persist() {
@@ -177,10 +176,15 @@ const AssignmentView = () => {
                                     />
                                 </Col>
                             </Form.Group>
-                        </>):
-                        (<Button size="lg" onClick={() => save(assignment)}>
-                            Submit assignment
-                        </Button>)
+                        </>): assignment.status === "Pending Submissions" ? (
+                        <Button size="lg" onClick={() => save("Submitted")}>
+                            Submit Assignment
+                        </Button>) :
+                            (
+                                <Button size="lg" onClick={() => save("Resubmitted")}>
+                                    Re-Submit Assignment
+                                </Button>
+                            )
                     }
                 </>
             ) : (

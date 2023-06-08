@@ -18,7 +18,7 @@ const Dashboard = () => {
 
     function createAssignment() {
         ajax("api/assignments", "POST", jwt).then((assignment) => {
-            navigate(`assignments/${assignment.id}`);
+            window.location.href=`/assignments/${assignment.id}`;
         });
     }
 

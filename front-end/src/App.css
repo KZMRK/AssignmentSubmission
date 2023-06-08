@@ -23,3 +23,7 @@
 .bg-submitted {
     background-color: #0079FF;
 }
+
+.bg-pending-submissions {
+    background-color: #faa070;
+}

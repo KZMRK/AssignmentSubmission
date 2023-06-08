@@ -25,7 +25,7 @@ function CodeReviewerDashboard(props) {
     }
 
     function editReview(assignment) {
-        navigate(`/assignments/${assignment.id}`);
+        window.location.href=`/assignments/${assignment.id}`
     }
 
     return (
@@ -36,7 +36,7 @@ function CodeReviewerDashboard(props) {
                     <div className="h3 mb-4 assignment-wrapper-title">Await for review</div>
                     {assignments ? (
                         <Row xs={1} md={2} lg={3} xl={4} className="g-2 ">
-                            {assignments.filter((assignment) => assignment.status === "Submitted").map((assignment) => (
+                            {assignments.filter((assignment) => assignment.status === "Submitted" || assignment.status === "Resubmitted").map((assignment) => (
                                 <Col className="d-flex justify-content-center" key={assignment.id}>
                                     <Card
                                         className="h-100"
@@ -76,7 +76,15 @@ function CodeReviewerDashboard(props) {
                     <div className="h3 mb-4 assignment-wrapper-title">In Review</div>
                     {assignments ? (
                         <Row xs={1} md={2} lg={3} xl={4} className="g-2 ">
-                            {assignments.filter((assignment) => assignment.status === "In Review").map((assignment) => (
+                            {assignments
+                            .filter((assignment) => assignment.status === "In Review")
+                            .sort((assignment1, assignment2) => {
+                                if (assignment1.status === "Resubmitted")
+                                    return -1;
+                                else
+                                    return 1;
+                            })
+                            .map((assignment) => (
                                 <Col className="d-flex justify-content-center" key={assignment.id}>
                                     <Card
                                         className="h-100"
@@ -141,7 +149,7 @@ function CodeReviewerDashboard(props) {
                                             </Card.Text>
                                             <Button
                                                 variant="secondary"
-                                                onClick={() => navigate(`/assignments/${assignment.id}`)}
+                                                onClick={() => window.location.href=`/assignments/${assignment.id}`}
                                             >
                                                 View
                                             </Button>
