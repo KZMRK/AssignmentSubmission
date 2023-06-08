@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {useLocalState} from "../../util/useLocalStorage";
 import {Navigate} from "react-router";
 import ajax from "../../services/fetchService";
+import {UserContext} from "../provider/UserProvider";
 
 const PrivateRoute = ({ children }) => {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const {jwt, setJwt} = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
     const [isValid, setIsValid] = useState(false);
     if (jwt) {

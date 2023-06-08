@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useLocalState} from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
-import jwt_decode from "jwt-decode";
 import StatusBadge from "../statusBadge/StatusBadge";
 import {useNavigate} from "react-router-dom";
+import {UserContext} from "../provider/UserProvider";
 
 function CodeReviewerDashboard(props) {
-    const [jwt, seJwt] = useLocalState("", "jwt");
+    const {jwt, seJwt} = useContext(UserContext);
     const [assignments, setAssignments] = useState(null);
     const navigate = useNavigate();
 

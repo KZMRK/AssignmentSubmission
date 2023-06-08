@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
 import StatusBadge from "../statusBadge/StatusBadge";
 import { useNavigate } from "react-router-dom";
+import {UserContext} from "../provider/UserProvider";
 
 const Dashboard = () => {
-    const [jwt, seJwt] = useLocalState("", "jwt");
+    const {jwt, seJwt} = useContext(UserContext);
     const [assignments, setAssignments] = useState(null);
     const navigate = useNavigate();
 

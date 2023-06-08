@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef, useContext} from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {
@@ -14,9 +14,10 @@ import {
 } from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import { Navigate } from "react-router";
+import {UserContext} from "../provider/UserProvider";
 
 const AssignmentView = () => {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const {jwt, setJwt} = useContext(UserContext);
     const assignmentId = window.location.href.split("/assignments/")[1];
     const [assignment, setAssignment] = useState({
         status: null,

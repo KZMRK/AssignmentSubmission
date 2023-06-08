@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { useLocalState } from "../../util/useLocalStorage";
-import ajax from "../../services/fetchService";
+import React, {useContext, useState} from "react";
 import {Button, Col, Container, Row, Form} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {UserContext} from "../provider/UserProvider";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const {jwt, setJwt} = useContext(UserContext);
     const navigate = useNavigate();
 
     function sendLoginRequest() {
@@ -96,7 +95,6 @@ const Login = () => {
                     </Col>
                 </Row>
             </Container>
-
         </>
     );
 };

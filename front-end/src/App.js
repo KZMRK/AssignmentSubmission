@@ -6,14 +6,14 @@ import Login from "./components/login/Login";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import AssignmentView from "./components/assignmentView/AssignmentView";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import jwt_decode from "jwt-decode";
-import { useLocalState } from "./util/useLocalStorage";
 import CodeReviewerDashboard from "./components/dashboard/CodeReviewerDashboard";
 import CodeReviewerAssignmentView from "./components/assignmentView/CodeReviewerAssignmentView";
+import {UserContext} from "./components/provider/UserProvider";
 
 function App() {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const {jwt, setJwt} = useContext(UserContext);
     const [roles, setRoles] = useState(getRoleFromJWT());
 
     function getRoleFromJWT() {
@@ -25,30 +25,31 @@ function App() {
     }
 
     return (
-        <Routes>
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute> {
-                        roles.some((role) => role === "ROLE_CODE_REVIEWER") ?
-                        (<CodeReviewerDashboard />) : (<Dashboard />)
+
+            <Routes>
+                <Route
+                    path="/dashboard"
+                    element={
+                        <PrivateRoute> {
+                            roles.some((role) => role === "ROLE_CODE_REVIEWER") ?
+                                (<CodeReviewerDashboard />) : (<Dashboard />)
+                        }
+                        </PrivateRoute>
                     }
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/assignments/:id"
-                element={
-                    <PrivateRoute>{
-                        roles.some(role => role === "ROLE_CODE_REVIEWER") ?
-                            (<CodeReviewerAssignmentView />) : (<AssignmentView />)
+                />
+                <Route
+                    path="/assignments/:id"
+                    element={
+                        <PrivateRoute>{
+                            roles.some(role => role === "ROLE_CODE_REVIEWER") ?
+                                (<CodeReviewerAssignmentView />) : (<AssignmentView />)
+                        }
+                        </PrivateRoute>
                     }
-                    </PrivateRoute>
-                }
-            />
-            <Route path="/" element={<Home />} />
-            <Route path="login" element={<Login />} />
-        </Routes>
+                />
+                <Route path="/" element={<Home />} />
+                <Route path="login" element={<Login />} />
+            </Routes>
     );
 }
 
