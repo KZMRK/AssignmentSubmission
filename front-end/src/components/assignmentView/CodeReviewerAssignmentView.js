@@ -36,10 +36,8 @@ const CodeReviewerAssignmentView = () => {
     function save(status) {
         if (status && assignment.status !== status) {
             updateAssignment("status", status);
-        } else {
-            persist();
+            window.location.href="/dashboard";
         }
-        window.location.href="/dashboard";
     }
 
     function persist() {
@@ -48,6 +46,7 @@ const CodeReviewerAssignmentView = () => {
                 setAssignment(assignment);
             }
         );
+        console.log("ajax")
     }
 
     useEffect(() => {

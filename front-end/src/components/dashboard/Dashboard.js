@@ -1,15 +1,12 @@
-import React, {useContext, useEffect, useState} from "react";
-import { useLocalState } from "../../util/useLocalStorage";
+import React, { useContext, useEffect, useState } from "react";
 import ajax from "../../services/fetchService";
-import {Card, Button, Row, Col, Container, Badge} from "react-bootstrap";
-import StatusBadge from "../statusBadge/StatusBadge";
-import { useNavigate } from "react-router-dom";
-import {UserContext} from "../provider/UserProvider";
+import { Button, Container } from "react-bootstrap";
+import { UserContext } from "../provider/UserProvider";
+import CardCollection from "./CardCollection";
 
 const Dashboard = () => {
-    const {jwt, seJwt} = useContext(UserContext);
+    const { jwt, seJwt } = useContext(UserContext);
     const [assignments, setAssignments] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         ajax("api/assignments", "GET", jwt).then((assignmentsData) => {
@@ -19,7 +16,7 @@ const Dashboard = () => {
 
     function createAssignment() {
         ajax("api/assignments", "POST", jwt).then((assignment) => {
-            window.location.href=`/assignments/${assignment.id}`;
+            window.location.href = `/assignments/${assignment.id}`;
         });
     }
 
@@ -34,37 +31,7 @@ const Dashboard = () => {
                     Submit new assignment
                 </Button>
                 {assignments ? (
-                    <Row xs={1} md={2} lg={3} xl={4} className="g-2">
-                        {assignments.map((assignment) => (
-                            <Col className="d-flex justify-content-center" key={assignment.id}>
-                                <Card
-                                    className="h-100"
-                                    style={{ width: "18rem" }}
-                                >
-                                    <Card.Body className="d-flex flex-column justify-content-around">
-                                        <Card.Title>
-                                            Assignment #{assignment.number}
-                                        </Card.Title>
-                                        <Card.Subtitle className="my-2 text-muted">
-                                            <StatusBadge text={assignment.status} />
-                                        </Card.Subtitle>
-                                        <Card.Text>
-                                            <p>
-                                                <b>GitHub URL: </b>{assignment.githubUrl}
-                                            </p>
-                                            <p><b>Branch:</b> {assignment.branch}</p>
-                                        </Card.Text>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => navigate(`/assignments/${assignment.id}`)}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
+                    <CardCollection assignments={assignments} />
                 ) : (
                     <></>
                 )}
