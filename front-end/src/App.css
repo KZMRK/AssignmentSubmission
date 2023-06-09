@@ -13,17 +13,25 @@
 }
 
 .bg-complete {
-    background-color: #00DFA2;
+    background-color: #3B9212;
 }
 
 .bg-needs-update {
-    background-color: #FF0060;
+    background-color: #BF181D;
 }
 
 .bg-submitted {
-    background-color: #0079FF;
+    background-color: #0070E0;
 }
 
 .bg-pending-submissions {
-    background-color: #faa070;
+    background-color: #686361;
+}
+
+.bg-resubmitted {
+    background-color: #FEC84D;
+}
+
+.bg-in-review {
+    background-color: #B7D100;
 }

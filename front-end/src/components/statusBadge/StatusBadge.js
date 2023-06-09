@@ -2,10 +2,10 @@ import React from 'react';
 import {Badge} from "react-bootstrap";
 
 const StatusBadge = (props) => {
-    const {text} = props;
+    const {status} = props;
 
     function getColorClassOfBadge() {
-        switch (text) {
+        switch (status) {
             case "Complete":
                 return "complete";
             case "Needs Update":
@@ -14,6 +14,10 @@ const StatusBadge = (props) => {
                 return "submitted"
             case "Pending Submissions":
                 return "pending-submissions"
+            case "Resubmitted":
+                return "resubmitted";
+            case "In Review":
+                return "in-review"
             default:
                 return "info"
         }
@@ -21,7 +25,7 @@ const StatusBadge = (props) => {
 
     return (
         <Badge pill bg={getColorClassOfBadge()} style={{ fontSize: "1em" }}>
-            {text}
+            {status}
         </Badge>
     );
 };
