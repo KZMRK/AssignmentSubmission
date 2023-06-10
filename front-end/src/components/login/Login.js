@@ -1,13 +1,13 @@
-import React, {useContext, useState} from "react";
-import {Button, Col, Container, Row, Form} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
-import {UserContext} from "../provider/UserProvider";
+import React, { useContext, useState } from "react";
+import { Button, Col, Container, Row, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../provider/UserProvider";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const {jwt, setJwt} = useContext(UserContext);
+    const { jwt, setJwt } = useContext(UserContext);
     const navigate = useNavigate();
 
     function sendLoginRequest() {
@@ -23,77 +23,84 @@ const Login = () => {
             method: "post",
             body: JSON.stringify(reqBody),
         })
-        .then((response) => {
+            .then((response) => {
                 if (response.status === 200) {
                     return Promise.all([response.json(), response.headers]);
                 } else {
                     return Promise.reject("Invalid login attempt");
                 }
-            }
-        )
-        .then(([body, headers]) => {
-            console.log(headers.get("authorization"))
-            setJwt(headers.get("authorization"));
-            window.location.href="/dashboard";
-        }).catch((message) => {
-            alert(message)
-        });
-
+            })
+            .then(([body, headers]) => {
+                console.log(headers.get("authorization"));
+                setJwt(headers.get("authorization"));
+                window.location.href = "/dashboard";
+            })
+            .catch((message) => {
+                alert(message);
+            });
     }
     return (
         <>
-            <Container>
-                <Row className="justify-content-center">
-                    <Col md="8" lg="6">
-                        <Form.Group className="mb-3" size="lg" controlId="username">
-                            <Form.Label className="fs-3">Username</Form.Label>
-                            <Form.Control
-                                type="email"
-                                value={username}
-                                placeholder="Enter your username"
-                                onChange={(event) => setUsername(event.target.value)}
+            <Container
+                className="d-flex align-items-center justify-content-center"
+                style={{ height: "90vh" }}
+            >
+                <Container className="p-5 w-auto login-wrapper">
+                    <div className="h1 mt-0 text-center login-wrapper-title">SiGN UP</div>
+                    <Row>
+                        <Col>
+                            <Form.Group
+                                className="mb-3"
                                 size="lg"
-                            />
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row className="justify-content-center">
-                    <Col md="8" lg="6">
-                        <Form.Group className="mb-3" controlId="password">
-                            <Form.Label className="fs-3">Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={password}
-                                placeholder="Password"
-                                onChange={(event) => setPassword(event.target.value)}
+                                controlId="username"
+                            >
+                                <Form.Label className="fs-5">
+                                    Username
+                                </Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    value={username}
+                                    placeholder="Enter your username"
+                                    onChange={(event) =>
+                                        setUsername(event.target.value)
+                                    }
+                                    size="lg"
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row className="justify-content-center">
+                        <Col>
+                            <Form.Group className="mb-3" controlId="password">
+                                <Form.Label className="fs-5">
+                                    Password
+                                </Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={password}
+                                    placeholder="Password"
+                                    onChange={(event) =>
+                                        setPassword(event.target.value)
+                                    }
+                                    size="lg"
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row className="justify-content-center">
+                        <Col className="mt-2 w-100" md="8" lg="6">
+                            <Button
+                                type="button"
+                                id="submit"
                                 size="lg"
-                            />
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row className="justify-content-center">
-                    <Col
-                        className="mt-2 d-flex flex-column flex-md-row gap-5 justify-content-between"
-                        md="8"
-                        lg="6"
-                    >
-                        <Button
-                            type="button"
-                            id="submit"
-                            onClick={() => sendLoginRequest()}
-                        >
-                            Login
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            type="button"
-                            id="submit"
-                            onClick={() => navigate("/")}
-                        >
-                            Exit
-                        </Button>
-                    </Col>
-                </Row>
+                                className="w-100"
+                                onClick={() => sendLoginRequest()}
+                            >
+                                Login
+                            </Button>
+                        </Col>
+                    </Row>
+                </Container>
             </Container>
         </>
     );

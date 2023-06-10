@@ -23,13 +23,15 @@ const Dashboard = () => {
     return (
         <div className="mt-3">
             <Container>
-                <Button
-                    className="mb-4"
-                    size="lg"
-                    onClick={() => createAssignment()}
-                >
-                    Submit new assignment
-                </Button>
+                <Container className="my-4 d-flex justify-content-center justify-content-md-start">
+                    <Button
+                        size="lg"
+                        onClick={() => createAssignment()}
+                    >
+                        Submit new assignment
+                    </Button>
+                </Container>
+
                 {assignments ? (
                     <CardCollection assignments={assignments} />
                 ) : (

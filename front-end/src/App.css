@@ -1,3 +1,22 @@
+.login-wrapper {
+    border: 1px solid #b0b0b0;
+    padding: 2em;
+    border-radius: 1em
+}
+
+.login-wrapper .login-wrapper-title {
+    background-color: white!important;
+    width: fit-content!important;
+    margin: -1.9em auto 0.8em!important;
+    padding: 0 0.4em;
+}
+
+@media screen and (max-width: 768px) {
+    .login-wrapper .login-wrapper-title {
+        margin-top: 0!important;
+    }
+}
+
 .assignment-wrapper {
     margin-top: 4em;
     border: 1px dashed #b0b0b0;
