@@ -8,7 +8,6 @@ const Login = () => {
     const [password, setPassword] = useState("");
 
     const { jwt, setJwt } = useContext(UserContext);
-    const navigate = useNavigate();
 
     function sendLoginRequest() {
         const reqBody = {
@@ -36,7 +35,7 @@ const Login = () => {
                 window.location.href = "/dashboard";
             })
             .catch((message) => {
-                alert(message);
+                document.getElementById("invalid-inputs").style.display="block";
             });
     }
     return (
@@ -47,6 +46,11 @@ const Login = () => {
             >
                 <Container className="p-5 w-auto login-wrapper">
                     <div className="h1 mt-0 text-center login-wrapper-title">SiGN UP</div>
+                    <Row>
+                        <Col>
+                            <div id="invalid-inputs" style={{display: "none"}}>Incorrect username or password</div>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col>
                             <Form.Group

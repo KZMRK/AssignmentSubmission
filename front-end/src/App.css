@@ -69,3 +69,15 @@
     width: 40px;
     margin-right: 8px;
 }
+
+.login-wrapper #invalid-inputs {
+    background-color: #f6aeaf;
+    color: #6D0E10;
+    text-align: center;
+    height: 2.5em;
+    vertical-align: center;
+    border-radius: 3px;
+    border: 1px solid #6D0E10;
+    margin-bottom: 1em;
+    line-height: 2.5em;
+}
