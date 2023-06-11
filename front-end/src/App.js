@@ -10,7 +10,9 @@ import { useContext, useState } from "react";
 import jwt_decode from "jwt-decode";
 import CodeReviewerDashboard from "./components/dashboard/CodeReviewerDashboard";
 import CodeReviewerAssignmentView from "./components/assignmentView/CodeReviewerAssignmentView";
+import AdminDashboard from "./components/dashboard/adminDashboard/AdminDashboard";
 import { UserContext } from "./components/provider/UserProvider";
+import UserView from "./components/assignmentView/UserView";
 
 function App() {
     const { jwt, setJwt } = useContext(UserContext);
@@ -32,9 +34,12 @@ function App() {
                     <PrivateRoute>
                         {roles.some((role) => role === "ROLE_CODE_REVIEWER") ? (
                             <CodeReviewerDashboard />
+                        ) : roles.some((role) => role === "ROLE_STUDENT") ? (
+                            <StudentDashboard />
                         ) : (
-                            <Dashboard />
-                        )}
+                            <AdminDashboard />
+                        )
+                        }
                     </PrivateRoute>
                 }
             />

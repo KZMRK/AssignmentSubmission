@@ -34,7 +34,13 @@ const StudentFormView = () => {
                 setAssignmentEnums(assignmentResponse.assignmentEnums);
                 setAssignmentStatuses(assignmentResponse.assignmentStatusEnums);
             }
-        );
+        ).catch(error => {
+            if (error.message === "Forbidden") {
+                alert("У вас немає доступу до цього ресурсу.");
+            } else {
+                console.log(error.message);
+            }
+        });
     }, []);
 
     function updateAssignment(prop, value) {

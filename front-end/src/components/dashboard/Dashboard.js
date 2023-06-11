@@ -9,13 +9,13 @@ const Dashboard = () => {
     const [assignments, setAssignments] = useState(null);
 
     useEffect(() => {
-        ajax("api/assignments", "GET", jwt).then((assignmentsData) => {
+        ajax("/api/assignments/", "GET", jwt).then((assignmentsData) => {
             setAssignments(assignmentsData);
         });
     }, []);
 
     function createAssignment() {
-        ajax("api/assignments", "POST", jwt).then((assignment) => {
+        ajax("/api/assignments", "POST", jwt).then((assignment) => {
             window.location.href = `/assignments/${assignment.id}`;
         });
     }
