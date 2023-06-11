@@ -13,6 +13,7 @@ import { UserContext } from "../provider/UserProvider";
 import StatusBadge from "../statusBadge/StatusBadge";
 import { useParams } from "react-router";
 import CommentContainer from "../comment/CommentContainer";
+import Loading from "../loading/Loading";
 
 const StudentFormView = () => {
     const [assignment, setAssignment] = useState({
@@ -117,9 +118,7 @@ const StudentFormView = () => {
 
     if (!assignment.status) {
         return (
-            <div style={{ position: "absolute", left: "0", top: "0" }}>
-                Loading...
-            </div>
+            <Loading/>
         );
     }
 

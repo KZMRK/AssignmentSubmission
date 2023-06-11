@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext} from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
 import {
@@ -16,6 +16,8 @@ import {Link, useNavigate} from "react-router-dom";
 import { Navigate } from "react-router";
 import {UserContext} from "../provider/UserProvider";
 import CommentContainer from "../comment/CommentContainer";
+import StatusBadge from "../statusBadge/StatusBadge";
+import Loading from "../loading/Loading";
 
 const CodeReviewerAssignmentView = () => {
     const {jwt, setJwt} = useContext(UserContext);
@@ -68,9 +70,7 @@ const CodeReviewerAssignmentView = () => {
 
     if (!assignment.status) {
         return (
-            <div style={{ position: "absolute", left: "0", top: "0" }}>
-                Loading...
-            </div>
+            <Loading/>
         );
     }
 
