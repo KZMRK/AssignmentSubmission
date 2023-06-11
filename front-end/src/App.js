@@ -1,6 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
-import Dashboard from "./components/dashboard/Dashboard";
+import StudentDashboard from "./components/dashboard/Dashboard";
 import Home from "./components/home/Home";
 import Login from "./components/login/Login";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";

@@ -10,17 +10,17 @@ import {
     Form,
     Row,
     Dropdown,
-    ButtonGroup,
+    ButtonGroup, Spinner,
 } from "react-bootstrap";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router";
-import {UserContext} from "../provider/UserProvider";
+import { UserContext } from "../provider/UserProvider";
 import CommentContainer from "../comment/CommentContainer";
 import StatusBadge from "../statusBadge/StatusBadge";
 import Loading from "../loading/Loading";
 
 const CodeReviewerAssignmentView = () => {
-    const {jwt, setJwt} = useContext(UserContext);
+    const { jwt, setJwt } = useContext(UserContext);
     const assignmentId = window.location.href.split("/assignments/")[1];
     const [assignment, setAssignment] = useState({
         status: null,
@@ -28,7 +28,6 @@ const CodeReviewerAssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
-
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -39,7 +38,7 @@ const CodeReviewerAssignmentView = () => {
     function save(status) {
         if (status && assignment.status !== status) {
             updateAssignment("status", status);
-            window.location.href="/dashboard";
+            window.location.href = "/dashboard";
         }
     }
 
@@ -74,10 +73,48 @@ const CodeReviewerAssignmentView = () => {
         );
     }
 
+    function showButtonDependsOnStatus(status) {
+        switch (status) {
+            case assignmentStatuses[3].status:
+                return (
+                    <Button
+                        className="mx-2"
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => save(assignmentStatuses[2].status)}
+                    >
+                        Re-Claim
+                    </Button>
+                );
+            case assignmentStatuses[2].status:
+            case assignmentStatuses[5].status:
+                return (
+                    <>
+                        <Button
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[4].status)}
+                        >
+                            Complete Review
+                        </Button>
+                        <Button
+                            className="mx-2"
+                            variant="danger"
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[3].status)}
+                        >
+                            Reject Assignment
+                        </Button>
+                    </>
+                );
+            default:
+                return <></>;
+        }
+    }
+
     return (
         <Container
             className="mt-5 justify-content-center"
-            style={{ width: "40rem" }}
+            style={{ maxWidth: "40rem" }}
         >
             {assignment ? (
                 <>
@@ -89,9 +126,7 @@ const CodeReviewerAssignmentView = () => {
                             </h1>
                         </Col>
                         <Col className="text-end">
-                            <Badge pill bg="info" style={{ fontSize: "1em" }}>
-                                {assignment.status}
-                            </Badge>{" "}
+                            <StatusBadge status={assignment.status} />
                         </Col>
                     </Row>
                     <Form.Group as={Row} className="my-4 align-items-center">
@@ -100,7 +135,7 @@ const CodeReviewerAssignmentView = () => {
                                 GitHub URL:
                             </Form.Label>
                         </Col>
-                        <Col sm="8" md="8" lg="8">
+                        <Col sm="6" md="8" lg="8">
                             <Form.Control
                                 type="url"
                                 id="githubUrl"
@@ -155,36 +190,12 @@ const CodeReviewerAssignmentView = () => {
                             />
                         </Col>
                     </Form.Group>
-                    <Button
-                        size="lg"
-                        onClick={() => save(assignmentStatuses[4].status)}
-                    >
-                        Complete Review
-                    </Button>
-                    {assignment.status === "Needs Update" ? (
-                        <Button
-                            className="mx-2"
-                            variant="secondary"
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[2].status)}
-                        >
-                            Re-Claim
-                        </Button>
-                    ) : (
-                        <Button
-                            className="mx-2"
-                            variant="danger"
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[3].status)}
-                        >
-                            Reject Assignment
-                        </Button>
-                    )}
+                    {showButtonDependsOnStatus(assignment.status)}
                 </>
             ) : (
                 <></>
             )}
-            <CommentContainer assignment={assignment}/>
+            <CommentContainer assignment={assignment} />
         </Container>
     );
 };
