@@ -81,3 +81,15 @@
     margin-bottom: 1em;
     line-height: 2.5em;
 }
+
+.comment-bubble {
+    background-color: #eeee;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em 0 0;
+}
+
+.comment-relative-time {
+    color: #939393;
+    margin-left: 1em;
+}

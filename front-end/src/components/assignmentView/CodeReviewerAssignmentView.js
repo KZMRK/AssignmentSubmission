@@ -15,6 +15,7 @@ import {
 import {Link, useNavigate} from "react-router-dom";
 import { Navigate } from "react-router";
 import {UserContext} from "../provider/UserProvider";
+import CommentContainer from "../comment/CommentContainer";
 
 const CodeReviewerAssignmentView = () => {
     const {jwt, setJwt} = useContext(UserContext);
@@ -46,7 +47,6 @@ const CodeReviewerAssignmentView = () => {
                 setAssignment(assignment);
             }
         );
-        console.log("ajax")
     }
 
     useEffect(() => {
@@ -65,6 +65,14 @@ const CodeReviewerAssignmentView = () => {
             }
         );
     }, []);
+
+    if (!assignment.status) {
+        return (
+            <div style={{ position: "absolute", left: "0", top: "0" }}>
+                Loading...
+            </div>
+        );
+    }
 
     return (
         <Container
@@ -176,6 +184,7 @@ const CodeReviewerAssignmentView = () => {
             ) : (
                 <></>
             )}
+            <CommentContainer assignment={assignment}/>
         </Container>
     );
 };
