@@ -8,17 +8,25 @@ const TabBody = (props) => {
     return (
        <>
             <Row>
-                <Col>Username</Col>
+                <Col>First Name</Col>
+                <Col>Last Name</Col>
+                <Col>Email</Col>
                 <Col>Role</Col>
             </Row>
             {users
             .map(user => (
                 <Row key={user.id}>
                     <Col>
-                        {user.username}
+                        {user.firstName}
                     </Col>
                     <Col>
-                        {user.authority}
+                        {user.lastName}
+                    </Col>
+                    <Col>
+                        {user.email}
+                    </Col>
+                    <Col>
+                        {user.role}
                     </Col>
                 </Row>
             ))}

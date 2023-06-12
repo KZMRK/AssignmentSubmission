@@ -7,7 +7,7 @@ import {BiLogIn, BiLogOut} from "react-icons/bi";
 
 const Navigation = () => {
     const { jwt, setJwt } = useContext(UserContext);
-    const [username, setUsername] = useState(jwt ? jwt_decode(jwt).sub : null);
+    const [username, setUsername] = useState(jwt ? jwt_decode(jwt).fullName : "");
 
     return (
 

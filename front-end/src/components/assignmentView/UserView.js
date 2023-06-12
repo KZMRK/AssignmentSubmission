@@ -7,12 +7,14 @@ import {UserContext} from "../provider/UserProvider";
 const UserView = () => {
     const {jwt, setJwt} = useContext(UserContext);
     const [user, setUser] = useState({
+        firstName: "",
+        lastName: "",
         email: "",
-        username: "",
         password: "",
-        authority: ""
+        role: ""
     });
     function registerUser() {
+        console.log(user);
         ajax("/api/auth/register", "POST", jwt, user)
         .then((response) => {
             window.location.href="/dashboard";
@@ -29,6 +31,32 @@ const UserView = () => {
         <Form className="justify-content-center mt-3" as={Container} style={{maxWidth: "40em"}}>
             <Form.Group  as={Row} className="mb-3">
                 <Col>
+                    <Form.Label>First name</Form.Label>
+                </Col>
+                <Col>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter first name"
+                        onChange={(e) => updateUser("firstName", e.target.value)}
+                        value={user.firstName}
+                    />
+                </Col>
+            </Form.Group>
+            <Form.Group  as={Row} className="mb-3">
+                <Col>
+                    <Form.Label>Last name</Form.Label>
+                </Col>
+                <Col>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter last name"
+                        onChange={(e) => updateUser("lastName", e.target.value)}
+                        value={user.lastName}
+                    />
+                </Col>
+            </Form.Group>
+            <Form.Group  as={Row} className="mb-3">
+                <Col>
                     <Form.Label>Email address</Form.Label>
                 </Col>
                 <Col>
@@ -37,19 +65,6 @@ const UserView = () => {
                         placeholder="Enter email"
                         onChange={(e) => updateUser("email", e.target.value)}
                         value={user.email}
-                    />
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-                <Col>
-                    <Form.Label>Username</Form.Label>
-                </Col>
-                <Col>
-                    <Form.Control
-                        type="text"
-                        placeholder="Enter username"
-                        onChange={(e) => updateUser("username", e.target.value)}
-                        value={user.username}
                     />
                 </Col>
             </Form.Group>
@@ -71,10 +86,10 @@ const UserView = () => {
                     <Form.Label>Role</Form.Label>
                 </Col>
                 <Col>
-                    <Form.Select onChange={(e) => updateUser("authority", e.target.value)} aria-label="Default select example">
+                    <Form.Select onChange={(e) => updateUser("role", e.target.value)} aria-label="Default select example">
                         <option>Open this select menu</option>
-                        <option value="STUDENT_ROLE">Student</option>
-                        <option value="CODE_REVIEWER_ROLE">Code reviewer</option>
+                        <option value="ROLE_STUDENT">Student</option>
+                        <option value="ROLE_CODE_REVIEWER">Code reviewer</option>
                     </Form.Select>
                 </Col>
             </Form.Group>

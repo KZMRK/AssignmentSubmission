@@ -33,6 +33,7 @@ const StudentFormView = () => {
                 setAssignment(assignmentResponse.assignment);
                 setAssignmentEnums(assignmentResponse.assignmentEnums);
                 setAssignmentStatuses(assignmentResponse.assignmentStatusEnums);
+
             }
         ).catch(error => {
             if (error.message === "Forbidden") {
@@ -59,9 +60,18 @@ const StudentFormView = () => {
     }
 
     function persist() {
+        /*const body = {
+            "id": 2,
+            "githubUrl": "https://github.com/KZMRK/assignment1",
+            "codeReviewVideoUrl": null,
+            "branch": "main",
+            "status": "Submitted"
+        };*/
+        console.log(assignment)
         ajax(`/api/assignments/${assignmentId}`, "PUT", jwt, assignment).then(
-            (assignment) => {
-                setAssignment(assignment);
+            (response) => {
+                console.log("putted")
+                setAssignment(response);
             }
         );
     }
@@ -88,6 +98,7 @@ const StudentFormView = () => {
                     </Button>
                 );
             case assignmentStatuses[4].status:
+            case assignmentStatuses[3].status:
                 return (
                     <>
                         <Form.Group
@@ -108,14 +119,13 @@ const StudentFormView = () => {
                                 />
                             </Col>
                         </Form.Group>
+                        {status === assignmentStatuses[3].status ?
+                        (<Button size="lg" onClick={() => save("Resubmitted")}>
+                                Re-Submit Assignment
+                            </Button>)
+                         : (<></>)}
                         <CommentContainer assignment={assignment} />
                     </>
-                );
-            case assignmentStatuses[3].status:
-                return (
-                    <Button size="lg" onClick={() => save("Resubmitted")}>
-                        Re-Submit Assignment
-                    </Button>
                 );
             default:
                 return <></>;

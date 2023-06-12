@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Button, Col, Container, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../provider/UserProvider";
+import ajax from "../../services/fetchService";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -11,32 +12,21 @@ const Login = () => {
 
     function sendLoginRequest() {
         const reqBody = {
-            username: username,
+            email: username,
             password: password,
         };
 
-        fetch("/api/auth/login", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            method: "post",
-            body: JSON.stringify(reqBody),
+
+        ajax("/api/auth/login", "POST", null, reqBody)
+        .then((response) => {
+            setJwt(response.token);
+            window.location.href = "/dashboard";
         })
-            .then((response) => {
-                if (response.status === 200) {
-                    return Promise.all([response.json(), response.headers]);
-                } else {
-                    return Promise.reject("Invalid login attempt");
-                }
-            })
-            .then(([body, headers]) => {
-                console.log(headers.get("authorization"));
-                setJwt(headers.get("authorization"));
-                window.location.href = "/dashboard";
-            })
-            .catch((message) => {
-                document.getElementById("invalid-inputs").style.display="block";
-            });
+        .catch((message) => {
+            document.getElementById("invalid-inputs").style.display="block";
+        });
+
+
     }
     return (
         <>

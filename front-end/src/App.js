@@ -16,14 +16,14 @@ import UserView from "./components/assignmentView/UserView";
 
 function App() {
     const { jwt, setJwt } = useContext(UserContext);
-    const [roles, setRoles] = useState(getRoleFromJWT());
+    const [role, setRole] = useState(getRoleFromJWT());
 
     function getRoleFromJWT() {
         if (jwt) {
             const decodedJwt = jwt_decode(jwt);
-            return decodedJwt.authorities;
+            return decodedJwt.role;
         }
-        return [];
+        return "";
     }
 
     return (
@@ -32,14 +32,13 @@ function App() {
                 path="/dashboard"
                 element={
                     <PrivateRoute>
-                        {roles.some((role) => role === "ROLE_CODE_REVIEWER") ? (
+                        {(role === "ROLE_CODE_REVIEWER") ? (
                             <CodeReviewerDashboard />
-                        ) : roles.some((role) => role === "ROLE_STUDENT") ? (
+                        ) : (role === "ROLE_STUDENT") ? (
                             <StudentDashboard />
                         ) : (
                             <AdminDashboard />
-                        )
-                        }
+                        )}
                     </PrivateRoute>
                 }
             />
@@ -47,7 +46,7 @@ function App() {
                 path="/assignments/:assignmentId"
                 element={
                     <PrivateRoute>
-                        {roles.some((role) => role === "ROLE_CODE_REVIEWER") ? (
+                        {(role === "ROLE_CODE_REVIEWER") ? (
                             <CodeReviewerAssignmentView />
                         ) : (
                             <AssignmentView />
@@ -55,6 +54,16 @@ function App() {
                     </PrivateRoute>
                 }
             />
+            <Route
+                path="/users/:userId"
+                element={
+                    <PrivateRoute>
+                        <UserView/>
+                    </PrivateRoute>
+                }
+            >
+
+            </Route>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
         </Routes>

@@ -35,13 +35,13 @@ const AdminDashboard = () => {
                 className="mb-3"
             >
                 <Tab eventKey="students" title="Students">
-                    <TabBody users={users.filter(user => user.authority === "ROLE_STUDENT")}/>
+                    <TabBody users={users.filter(user => user.role === "ROLE_STUDENT")}/>
                 </Tab>
                 <Tab eventKey="reviewer" title="Reviewers">
-                    <TabBody users={users.filter(user => user.authority === "ROLE_CODE_REVIEWER")}/>
+                    <TabBody users={users.filter(user => user.role === "ROLE_CODE_REVIEWER")}/>
                 </Tab>
                 <Tab eventKey="admins" title="Admins">
-                    <TabBody users={users.filter(user => user.authority === "ROLE_ADMIN")} />
+                    <TabBody users={users.filter(user => user.role === "ROLE_ADMIN")} />
                 </Tab>
             </Tabs>
         </Container>
