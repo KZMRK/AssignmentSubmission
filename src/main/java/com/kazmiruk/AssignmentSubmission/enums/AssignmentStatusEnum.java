@@ -26,12 +26,4 @@ public enum AssignmentStatusEnum {
     public Integer getStep() {
         return step;
     }
-
-    public static class Constants {
-        public static final String PENDING_SUBMISSION = "Pending Submissions";
-        public static final String SUBMITTED = "Submitted";
-        public static final String IN_REVIEW = "In Review";
-        public static final String NEEDS_UPDATE = "Needs Update";
-        public static final String COMPLETE = "Complete";
-    }
 }
