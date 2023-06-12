@@ -1,29 +1,23 @@
 package com.kazmiruk.AssignmentSubmission.web;
 
 import com.kazmiruk.AssignmentSubmission.domain.User;
-import com.kazmiruk.AssignmentSubmission.dto.AuthCredentialsRequest;
-import com.kazmiruk.AssignmentSubmission.util.JwtUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import com.kazmiruk.AssignmentSubmission.dto.AuthenticationRequest;
+import com.kazmiruk.AssignmentSubmission.dto.AuthenticationResponse;
+import com.kazmiruk.AssignmentSubmission.dto.RegisterRequest;
+import com.kazmiruk.AssignmentSubmission.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(

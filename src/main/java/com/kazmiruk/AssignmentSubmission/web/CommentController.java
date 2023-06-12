@@ -3,7 +3,7 @@ package com.kazmiruk.AssignmentSubmission.web;
 import com.kazmiruk.AssignmentSubmission.domain.Comment;
 import com.kazmiruk.AssignmentSubmission.domain.User;
 import com.kazmiruk.AssignmentSubmission.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +12,10 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/comments")
+@RequiredArgsConstructor
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<Comment> createComment(
