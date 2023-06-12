@@ -1,6 +1,6 @@
 package com.kazmiruk.AssignmentSubmission.util;
 
-import com.kazmiruk.AssignmentSubmission.domain.Authority;
+import com.kazmiruk.AssignmentSubmission.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -15,32 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final JwtUtil jwtUtil;
-
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestBody AuthCredentialsRequest request) {
-        try {
-            Authentication authenticate = authenticationManager
-                    .authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    request.getUsername(), request.getPassword()
-                            )
-                    );
-
-            User user = (User) authenticate.getPrincipal();
-
-            return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.AUTHORIZATION,
-                            jwtUtil.generateToken(user)
-                    )
-                    .body(user);
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+            @RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(authenticationService.login(request));
     }
 
     @GetMapping("/validate")
@@ -48,11 +28,13 @@ public class AuthenticationController {
             @RequestParam String token,
             @AuthenticationPrincipal User user
             ) {
-        try {
-            Boolean isTokenValid = jwtUtil.validateToken(token, user);
-            return ResponseEntity.ok(isTokenValid);
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.ok(false);
-        }
+        return ResponseEntity.ok(authenticationService.validate(token, user));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.register(request));
     }
 }
