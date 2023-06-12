@@ -1,36 +1,49 @@
 package com.kazmiruk.AssignmentSubmission.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kazmiruk.AssignmentSubmission.enums.Role;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 
 @Entity
 @Data
-@Table(name="users")
+@Table(name="_user")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private LocalDate cohortStartDate;
-    private String username;
+    private Long id;
+    private String email;
+    private String firstName;
+    private String lastName;
     @JsonIgnore
     private String password;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @JsonIgnore
-    private List<Authority> authorities = new ArrayList<>();
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
