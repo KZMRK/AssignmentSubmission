@@ -6,7 +6,6 @@ import com.kazmiruk.AssignmentSubmission.dto.AssignmentResponseDto;
 import com.kazmiruk.AssignmentSubmission.enums.AssignmentStatusEnum;
 import com.kazmiruk.AssignmentSubmission.enums.Role;
 import com.kazmiruk.AssignmentSubmission.service.AssignmentService;
-import com.kazmiruk.AssignmentSubmission.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +19,6 @@ import java.util.Optional;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
-
-    private final UsersService usersService;
 
     @PostMapping
     public ResponseEntity<?> createAssignment (@AuthenticationPrincipal User user) {

@@ -1,13 +1,12 @@
 package com.kazmiruk.AssignmentSubmission.dto;
 
 import com.kazmiruk.AssignmentSubmission.enums.Role;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @Data
 @AllArgsConstructor
