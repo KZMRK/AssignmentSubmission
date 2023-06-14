@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { useLocalState } from "../../util/useLocalStorage";
 import ajax from "../../services/fetchService";
+
 import {
     Badge,
     Button,
@@ -12,12 +12,12 @@ import {
     Dropdown,
     ButtonGroup, Spinner,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import { Navigate } from "react-router";
 import { UserContext } from "../provider/UserProvider";
-import CommentContainer from "../comment/CommentContainer";
 import StatusBadge from "../statusBadge/StatusBadge";
 import Loading from "../loading/Loading";
+import {useNavigate} from "react-router-dom";
+import Chat from "../comment/Chat";
+import SockJS from "sockjs-client"
 
 const CodeReviewerAssignmentView = () => {
     const { jwt, setJwt } = useContext(UserContext);
@@ -28,6 +28,8 @@ const CodeReviewerAssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
+    const navigate = useNavigate();
+
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -38,7 +40,6 @@ const CodeReviewerAssignmentView = () => {
     function save(status) {
         if (status && assignment.status !== status) {
             updateAssignment("status", status);
-            window.location.href = "/dashboard";
         }
     }
 
@@ -46,12 +47,13 @@ const CodeReviewerAssignmentView = () => {
         ajax(`/api/assignments/${assignmentId}`, "PUT", jwt, assignment).then(
             (assignment) => {
                 setAssignment(assignment);
+                navigate("/dashboard");
             }
         );
     }
 
     useEffect(() => {
-        if (prevAssignment.current.status !== assignment.status) {
+        if (prevAssignment.current.status && prevAssignment.current.status !== assignment.status) {
             persist();
         }
         prevAssignment.current = assignment;

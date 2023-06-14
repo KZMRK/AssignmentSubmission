@@ -4,10 +4,12 @@ import { UserContext } from "../provider/UserProvider";
 import jwt_decode from "jwt-decode";
 import logo from '../../img/logo.png'
 import {BiLogIn, BiLogOut} from "react-icons/bi";
+import {useNavigate} from "react-router-dom";
 
 const Navigation = () => {
     const { jwt, setJwt } = useContext(UserContext);
     const [username, setUsername] = useState(jwt ? jwt_decode(jwt).fullName : "");
+    const navigate = useNavigate();
 
     return (
 
@@ -35,6 +37,7 @@ const Navigation = () => {
                                     <NavDropdown title={`Signed in as: ${username}`} id="collasible-nav-dropdow">
                                         <NavDropdown.Item onClick={() => {
                                             setJwt("");
+                                            navigate("/login");
                                         }}>
                                             Log out <BiLogOut/>
                                         </NavDropdown.Item>

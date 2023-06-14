@@ -14,6 +14,7 @@ import StatusBadge from "../statusBadge/StatusBadge";
 import { useParams } from "react-router";
 import CommentContainer from "../comment/CommentContainer";
 import Loading from "../loading/Loading";
+import Chat from "../comment/Chat";
 
 const StudentFormView = () => {
     const [assignment, setAssignment] = useState({
@@ -124,7 +125,7 @@ const StudentFormView = () => {
                                 Re-Submit Assignment
                             </Button>)
                          : (<></>)}
-                        <CommentContainer assignment={assignment} />
+                        <Chat assignment={assignment} />
                     </>
                 );
             default:

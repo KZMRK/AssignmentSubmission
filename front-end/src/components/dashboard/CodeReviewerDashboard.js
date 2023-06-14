@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {UserContext} from "../provider/UserProvider";
 import CardCollection from "./CardCollection";
 
-function CodeReviewerDashboard(props) {
+function CodeReviewerDashboard() {
     const {jwt, seJwt} = useContext(UserContext);
     const [assignments, setAssignments] = useState(null);
     const navigate = useNavigate();
@@ -34,7 +34,7 @@ function CodeReviewerDashboard(props) {
                 <div className="h1">Code reviewer dashboard</div>
                 <div className="assignment-wrapper submitted">
                     <div className="h3 mb-4 assignment-wrapper-title">Await for review</div>
-                    {assignments ? (
+                    {assignments && assignments.some((assignment) => assignment.status === "Submitted") ? (
                         <CardCollection buttonClickedAction={claimAssignment} buttonText="Claim" assignments={assignments.filter((assignment) => assignment.status === "Submitted")}/>
                     ) : (
                         <div>No assignments found</div>
@@ -42,7 +42,7 @@ function CodeReviewerDashboard(props) {
                 </div>
                 <div className="assignment-wrapper in-review">
                     <div className="h3 mb-4 assignment-wrapper-title">In Review</div>
-                    {assignments ? (
+                    {assignments && assignments.some((assignment) => assignment.status === "In Review" || assignment.status === "Resubmitted")  ? (
                         <CardCollection buttonText="Edit" assignments={assignments
                         .filter((assignment) => assignment.status === "In Review" || assignment.status === "Resubmitted")
                         .sort((assignment1, assignment2) => {
