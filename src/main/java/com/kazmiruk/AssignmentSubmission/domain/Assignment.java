@@ -19,6 +19,7 @@ public class Assignment {
     private Integer number;
     private String status;
     private String githubUrl;
+    @Column(length = 25)
     private String branch;
     private String codeReviewVideoUrl;
     @ManyToOne(optional = false)

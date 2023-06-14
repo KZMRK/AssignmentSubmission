@@ -25,12 +25,16 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 100)
     private String email;
+    @Column(length = 50)
     private String firstName;
+    @Column(length = 60)
     private String lastName;
     @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private Role role;
 
     @JsonIgnore
