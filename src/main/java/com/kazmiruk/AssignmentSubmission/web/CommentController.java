@@ -5,6 +5,7 @@ import com.kazmiruk.AssignmentSubmission.domain.User;
 import com.kazmiruk.AssignmentSubmission.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +50,10 @@ public class CommentController {
     ) {
         commentService.deleteCommentById(commentId);
         return ResponseEntity.ok(commentId);
+    }
+
+    @MessageMapping("/private-message")
+    public Comment processMessage(Comment comment) {
+        return commentService.saveAndSendToUser(comment);
     }
 }
