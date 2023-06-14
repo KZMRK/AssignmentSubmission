@@ -28,7 +28,7 @@ const Comment = (props) => {
             <div className="comment-bubble">
                 <div className="d-flex justify-content-between">
                     <div style={{ fontWeight: "bold" }}>
-                        {createdBy.username}
+                        {`${createdBy.firstName} ${createdBy.lastName}`}
                     </div>
                     {decodedJwt.sub === createdBy.username ? (
                         <div>

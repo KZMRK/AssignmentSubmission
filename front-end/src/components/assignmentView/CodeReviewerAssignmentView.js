@@ -203,7 +203,7 @@ const CodeReviewerAssignmentView = () => {
             ) : (
                 <></>
             )}
-            <CommentContainer assignment={assignment} />
+            <Chat assignment={assignment} />
         </Container>
     );
 };

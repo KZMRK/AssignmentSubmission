@@ -1,25 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {
     Button,
-    Col,
-    Container,
     FloatingLabel,
-    Form,
-    Row,
+    Form
 } from "react-bootstrap";
 import Comment from "./Comment";
 import ajax from "../../services/fetchService";
 import { UserContext } from "../provider/UserProvider";
-import { useInterval } from "../../util/useInterval";
+import jwt_decode from "jwt-decode";
+import SockJS from "sockjs-client";
+import {Stomp} from "@stomp/stompjs";
+import {useInterval} from "../../util/useInterval";
 import dayjs from "dayjs";
 
+
+let stompClient = null;
 const CommentContainer = (props) => {
     const { jwt, setJwt } = useContext(UserContext);
     const assignment = props.assignment;
+    const userEmail = jwt_decode(jwt).sub;
 
     const [comment, setComment] = useState({
         assignment: assignment,
         text: "",
+        createdBy: {
+            email: userEmail
+        }
     });
     const [comments, setComments] = useState([]);
 
@@ -29,16 +35,41 @@ const CommentContainer = (props) => {
                 setComments(commentsData);
             }
         );
+            connect();
     }, []);
+
+    const handleMessageSend = () => {
+        if (stompClient) {
+            stompClient.send("/app/private-message", {}, JSON.stringify(comment));
+        }
+    };
+
+    /*useEffect(() => {
+        if (stompClient) {
+
+        }
+    }, [stompClient]);*/
 
     useEffect(() => {
         updateComment("assignment", assignment);
     }, [assignment]);
 
     function updateComment(prop, value) {
-        const newComment = { ...comment };
-        newComment[prop] = value;
-        setComment(newComment);
+        setComment((prevComment) => ({
+            ...prevComment,
+            [prop]: value,
+        }));
+    }
+
+    function connect() {
+        const socket = new SockJS('/websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, (frame) => {
+            stompClient.subscribe(`/user/${userEmail}/private`, (message) => {
+                const receivedComment = JSON.parse(message.body);
+                setComments((prevMessages) => [receivedComment, ...prevMessages]);
+            });
+        });
     }
 
     function handleDeleteComment(commentId) {
@@ -103,7 +134,7 @@ const CommentContainer = (props) => {
 
     return (
         <>
-            <div>
+            <div className="position-static bottom-0">
                 <FloatingLabel controlId="floatingTextarea2" label="Comments">
                     <Form.Control
                         as="textarea"
@@ -114,7 +145,10 @@ const CommentContainer = (props) => {
                     />
                 </FloatingLabel>
                 <div>
-                    <Button onClick={() => submitComment()}>
+                    <Button onClick={() => {
+                        handleMessageSend();
+                        clearTextArea();
+                    }}>
                         Post Comment
                     </Button>
                     <Button
@@ -130,19 +164,19 @@ const CommentContainer = (props) => {
             <div>
                 {comments ? (
                     comments
-                        .sort((comment1, comment2) => {
-                            if (comment1.createdAt > comment2.createdAt)
-                                return -1;
-                            else return 1;
-                        })
-                        .map((comment) => (
-                            <Comment
-                                key={comment.id}
-                                comment={comment}
-                                emitDeleteComment={handleDeleteComment}
-                                emitEditComment={handleEditComment}
-                            />
-                        ))
+                    .sort((comment1, comment2) => {
+                        if (comment1.createdAt > comment2.createdAt)
+                            return -1;
+                        else return 1;
+                    })
+                    .map((comment, index) => (
+                        <Comment
+                            key={index}
+                            comment={comment}
+                            emitDeleteComment={handleDeleteComment}
+                            emitEditComment={handleEditComment}
+                        />
+                    ))
                 ) : (
                     <></>
                 )}
