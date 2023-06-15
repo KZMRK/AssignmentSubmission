@@ -1,5 +1,6 @@
 import { Container } from "react-bootstrap";
 import StudentFormView from "./StudentFormView";
+import {ChatProvider} from "../provider/ChatProvider";
 
 const AssignmentView = () => {
     return (

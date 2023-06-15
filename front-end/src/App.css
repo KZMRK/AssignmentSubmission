@@ -1,7 +1,8 @@
 .login-wrapper {
     border: 1px solid #b0b0b0;
     padding: 2em;
-    border-radius: 1em
+    border-radius: 1em;
+    max-width: 500px!important;
 }
 
 .login-wrapper .login-wrapper-title {
@@ -14,6 +15,9 @@
 @media screen and (max-width: 768px) {
     .login-wrapper .login-wrapper-title {
         margin-top: 0!important;
+    }
+    .login-wrapper {
+        width: 400px!important;
     }
 }
 
@@ -92,4 +96,7 @@
 .comment-relative-time {
     color: #939393;
     margin-left: 0.6em;
+}
+.error {
+    color: #b92528;
 }

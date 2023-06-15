@@ -10,8 +10,6 @@ const StudentDashboard = () => {
     const [assignments, setAssignments] = useState(null);
 
     useEffect(() => {
-        console.log("GET");
-        console.log(jwt);
         ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
             setAssignments(assignmentsData);
         });
@@ -31,7 +29,7 @@ const StudentDashboard = () => {
                         size="lg"
                         onClick={() => createAssignment()}
                     >
-                        Submit new assignment
+                        Create new assignment
                     </Button>
                 </Container>
 

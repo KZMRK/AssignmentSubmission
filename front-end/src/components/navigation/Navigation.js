@@ -15,7 +15,7 @@ const Navigation = () => {
 
             <Navbar sticky="top" collapseOnSelect expand="md" bg="dark" variant="dark" className="custom-navbar">
                 <Container>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/dashboard">
                         <img
                             src={logo}
                             width="30"
@@ -28,7 +28,6 @@ const Navigation = () => {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse>
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Home</Nav.Link>
                             <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         </Nav>
                         <Nav>
@@ -36,7 +35,7 @@ const Navigation = () => {
                                 <>
                                     <NavDropdown title={`Signed in as: ${username}`} id="collasible-nav-dropdow">
                                         <NavDropdown.Item onClick={() => {
-                                            setJwt("");
+                                            setJwt(null);
                                             navigate("/login");
                                         }}>
                                             Log out <BiLogOut/>

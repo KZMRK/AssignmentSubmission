@@ -1,7 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
 import StudentDashboard from "./components/dashboard/StudentDashboard";
-import Home from "./components/home/Home";
 import Login from "./components/login/Login";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import AssignmentView from "./components/assignmentView/AssignmentView";
@@ -64,7 +63,6 @@ function App() {
             >
 
             </Route>
-            <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
         </Routes>
     );

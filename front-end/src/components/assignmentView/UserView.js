@@ -14,7 +14,6 @@ const UserView = () => {
         role: ""
     });
     function registerUser() {
-        console.log(user);
         ajax("/api/auth/register", "POST", jwt, user)
         .then((response) => {
             window.location.href="/dashboard";

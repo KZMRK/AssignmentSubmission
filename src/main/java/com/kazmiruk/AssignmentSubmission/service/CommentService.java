@@ -55,7 +55,9 @@ public class CommentService {
             receiver = assignmentRepository.findCodeReviewerByAssignment(comment.getAssignment());
         }
         comment.setCreatedBy(publisher);
-        comment.setCreatedAt(LocalDateTime.now());
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(LocalDateTime.now());
+        }
         Comment savedComment = commentRepository.save(comment);
         simpMessagingTemplate.convertAndSendToUser(receiver.getEmail(), "/private", savedComment);
         simpMessagingTemplate.convertAndSendToUser(publisher.getEmail(), "/private", savedComment);

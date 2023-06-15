@@ -18,6 +18,7 @@ import Loading from "../loading/Loading";
 import {useNavigate} from "react-router-dom";
 import Chat from "../comment/Chat";
 import SockJS from "sockjs-client"
+import {ChatProvider} from "../provider/ChatProvider";
 
 const CodeReviewerAssignmentView = () => {
     const { jwt, setJwt } = useContext(UserContext);
@@ -85,33 +86,40 @@ const CodeReviewerAssignmentView = () => {
         switch (status) {
             case assignmentStatuses[3].status:
                 return (
-                    <Button
-                        className="mx-2"
-                        variant="secondary"
-                        size="lg"
-                        onClick={() => save(assignmentStatuses[2].status)}
-                    >
-                        Re-Claim
-                    </Button>
+                    <Col>
+                        <Button
+                            className="w-100"
+                            variant="secondary"
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[2].status)}
+                        >
+                            Re-Claim
+                        </Button>
+                    </Col>
                 );
             case assignmentStatuses[2].status:
             case assignmentStatuses[5].status:
                 return (
                     <>
-                        <Button
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[4].status)}
-                        >
-                            Complete Review
-                        </Button>
-                        <Button
-                            className="mx-2"
-                            variant="danger"
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[3].status)}
-                        >
-                            Reject Assignment
-                        </Button>
+                        <Col>
+                            <Button
+                                size="lg"
+                                onClick={() => save(assignmentStatuses[4].status)}
+                                className="w-100"
+                            >
+                                Complete Review
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button
+                                className="w-100"
+                                variant="danger"
+                                size="lg"
+                                onClick={() => save(assignmentStatuses[3].status)}
+                            >
+                                Reject Assignment
+                            </Button>
+                        </Col>
                     </>
                 );
             default:
@@ -143,7 +151,7 @@ const CodeReviewerAssignmentView = () => {
                                 GitHub URL:
                             </Form.Label>
                         </Col>
-                        <Col sm="6" md="8" lg="8">
+                        <Col sm="8" md="8" lg="8">
                             <Form.Control
                                 type="url"
                                 id="githubUrl"
@@ -198,12 +206,18 @@ const CodeReviewerAssignmentView = () => {
                             />
                         </Col>
                     </Form.Group>
-                    {showButtonDependsOnStatus(assignment.status)}
+                    <Row className="gap-3">
+                        {showButtonDependsOnStatus(assignment.status)}
+                        <Col>
+                            <ChatProvider>
+                                <Chat assignment={assignment} />
+                            </ChatProvider>
+                        </Col>
+                    </Row>
                 </>
             ) : (
                 <></>
             )}
-            <Chat assignment={assignment} />
         </Container>
     );
 };

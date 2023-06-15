@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Button, Col, Container, Row, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../provider/UserProvider";
 import ajax from "../../services/fetchService";
 
@@ -25,8 +24,6 @@ const Login = () => {
         .catch((message) => {
             document.getElementById("invalid-inputs").style.display="block";
         });
-
-
     }
     return (
         <>
@@ -34,7 +31,7 @@ const Login = () => {
                 className="d-flex align-items-center justify-content-center"
                 style={{ height: "90vh" }}
             >
-                <Container className="p-5 w-auto login-wrapper">
+                <Container className="p-5 login-wrapper">
                     <div className="h1 mt-0 text-center login-wrapper-title">SiGN UP</div>
                     <Row>
                         <Col>
@@ -49,12 +46,12 @@ const Login = () => {
                                 controlId="username"
                             >
                                 <Form.Label className="fs-5">
-                                    Username
+                                    Email
                                 </Form.Label>
                                 <Form.Control
                                     type="email"
                                     value={username}
-                                    placeholder="Enter your username"
+                                    placeholder="Enter your email"
                                     onChange={(event) =>
                                         setUsername(event.target.value)
                                     }
