@@ -21,7 +21,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
 
     @PostMapping
-    public ResponseEntity<?> createAssignment (@AuthenticationPrincipal User user) {
+        public ResponseEntity<?> createAssignment (@AuthenticationPrincipal User user) {
         Assignment assignment = assignmentService.save(user);
         return ResponseEntity.ok(assignment);
     }

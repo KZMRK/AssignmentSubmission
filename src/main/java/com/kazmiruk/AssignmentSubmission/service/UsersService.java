@@ -3,6 +3,7 @@ package com.kazmiruk.AssignmentSubmission.service;
 import com.kazmiruk.AssignmentSubmission.domain.User;
 import com.kazmiruk.AssignmentSubmission.dto.UserDto;
 import com.kazmiruk.AssignmentSubmission.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UsersService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    public Optional<User> findUserByUsername(String email) {
-        return userRepository.findByEmail(email);
-    }
+    private final UserRepository userRepository;
 
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();

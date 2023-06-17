@@ -5,6 +5,7 @@ import com.kazmiruk.AssignmentSubmission.domain.User;
 import com.kazmiruk.AssignmentSubmission.enums.AssignmentStatusEnum;
 import com.kazmiruk.AssignmentSubmission.enums.Role;
 import com.kazmiruk.AssignmentSubmission.repository.AssignmentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,10 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AssignmentService {
 
-    @Autowired
-    private AssignmentRepository assignmentRepository;
+    private final AssignmentRepository assignmentRepository;
 
     public Assignment save(User user) {
         Assignment assignment = Assignment.builder()

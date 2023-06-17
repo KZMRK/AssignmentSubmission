@@ -25,25 +25,8 @@ public class CommentService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public Comment save(Comment comment, User user) {
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setCreatedBy(user);
-        return commentRepository.save(comment);
-    }
-
-    public Comment save(Comment comment) {
-        User publisher = userRepository.findByEmail(comment.getCreatedBy().getEmail()).orElseThrow();
-        comment.setCreatedBy(publisher);
-        comment.setCreatedAt(LocalDateTime.now());
-        return commentRepository.save(comment);
-    }
-
     public Set<Comment> getCommentsByAssignmentId(Long assignmentId) {
         return commentRepository.findByAssignmentId(assignmentId);
-    }
-
-    public void deleteCommentById(Long id) {
-        commentRepository.deleteById(id);
     }
 
     public Comment saveAndSendToUser(Comment comment) {
