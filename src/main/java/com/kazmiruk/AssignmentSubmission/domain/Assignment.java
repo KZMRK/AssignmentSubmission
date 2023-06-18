@@ -1,22 +1,25 @@
 package com.kazmiruk.AssignmentSubmission.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Assignment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Integer number;
     private String status;
     private String githubUrl;
+    @Column(length = 25)
     private String branch;
     private String codeReviewVideoUrl;
     @ManyToOne(optional = false)

@@ -24,13 +24,10 @@ const CardCollection = (props) => {
                                     <StatusBadge status={assignment.status} />
                                 </Card.Subtitle>
                                 <Card.Text>
-                                    <p>
-                                        <b>GitHub URL: </b>
-                                        {assignment.githubUrl}
-                                    </p>
-                                    <p>
-                                        <b>Branch:</b> {assignment.branch}
-                                    </p>
+                                    <b>GitHub URL: </b> {assignment.githubUrl}
+                                </Card.Text>
+                                <Card.Text className="">
+                                    <b>Branch:</b> {assignment.branch}
                                 </Card.Text>
                                 <Button
                                     variant="secondary"

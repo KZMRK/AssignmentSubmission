@@ -1,18 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Button,
-    ButtonGroup,
-    Col,
-    Dropdown,
-    DropdownButton,
-    Form,
-    Row,
-} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import ajax from "../../services/fetchService";
 import { UserContext } from "../provider/UserProvider";
 import StatusBadge from "../statusBadge/StatusBadge";
 import { useParams } from "react-router";
-import CommentContainer from "../comment/CommentContainer";
+import Loading from "../loading/Loading";
+import { ChatContext, ChatProvider } from "../provider/ChatProvider";
+import Chat from "../comment/Chat";
 
 const StudentFormView = () => {
     const [assignment, setAssignment] = useState({
@@ -20,20 +14,26 @@ const StudentFormView = () => {
     });
     const { jwt, setJwt } = useContext(UserContext);
     const { assignmentId } = useParams();
-    const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([
         { status: null },
     ]);
     const prevAssignment = useRef(assignment);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        ajax(`/api/assignments/${assignmentId}`, "GET", jwt).then(
-            (assignmentResponse) => {
+        ajax(`/api/assignments/${assignmentId}`, "GET", jwt)
+            .then((assignmentResponse) => {
                 setAssignment(assignmentResponse.assignment);
-                setAssignmentEnums(assignmentResponse.assignmentEnums);
                 setAssignmentStatuses(assignmentResponse.assignmentStatusEnums);
-            }
-        );
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                if (error.message === "Forbidden") {
+                    alert("У вас немає доступу до цього ресурсу.");
+                } else {
+                    console.log(error.message);
+                }
+            });
     }, []);
 
     function updateAssignment(prop, value) {
@@ -53,8 +53,8 @@ const StudentFormView = () => {
 
     function persist() {
         ajax(`/api/assignments/${assignmentId}`, "PUT", jwt, assignment).then(
-            (assignment) => {
-                setAssignment(assignment);
+            (response) => {
+                setAssignment(response);
             }
         );
     }
@@ -70,19 +70,19 @@ const StudentFormView = () => {
     }, [assignment]);
 
     function viewDependOnStatus(status) {
-        switch (status) {
-            case assignmentStatuses[0].status:
-                return (
-                    <Button
-                        size="lg"
-                        onClick={() => save(assignmentStatuses[1].status)}
-                    >
-                        Submit Assignment
-                    </Button>
-                );
-            case assignmentStatuses[4].status:
-                return (
-                    <>
+        if (status === assignmentStatuses[0].status) {
+            return (
+                <Button
+                    size="lg"
+                    onClick={() => save(assignmentStatuses[1].status)}
+                >
+                    Submit Assignment
+                </Button>
+            );
+        } else if (status !== assignmentStatuses[1].status) {
+            return (
+                <>
+                    {status !== assignmentStatuses[2].status ?  (
                         <Form.Group
                             as={Row}
                             className="mb-3 align-items-center"
@@ -96,34 +96,40 @@ const StudentFormView = () => {
                                 <Form.Control
                                     type="url"
                                     id="codeReviewVideoUrl"
-                                    value={assignment.codeReviewVideoUrl}
+                                    value={assignment.codeReviewVideoUrl || ""}
                                     readOnly
                                 />
                             </Col>
                         </Form.Group>
-                        <CommentContainer assignment={assignment} />
+                    ) : <></>}
+                    <>
+                        <Row className="gap-3">
+                            {status === assignmentStatuses[3].status && (
+                                <Col>
+                                    <Button
+                                        size="lg"
+                                        className="w-100"
+                                        onClick={() => save("Resubmitted")}
+                                    >
+                                        Re-Submit Assignment
+                                    </Button>
+                                </Col>
+                            )}
+                            <Col>
+                                <ChatProvider>
+                                    <Chat assignment={assignment} />
+                                </ChatProvider>
+                            </Col>
+                        </Row>
                     </>
-                );
-            case assignmentStatuses[3].status:
-                return (
-                    <Button size="lg" onClick={() => save("Resubmitted")}>
-                        Re-Submit Assignment
-                    </Button>
-                );
-            default:
-                return <></>;
+                </>
+            );
         }
     }
 
-    if (!assignment.status) {
-        return (
-            <div style={{ position: "absolute", left: "0", top: "0" }}>
-                Loading...
-            </div>
-        );
-    }
-
-    return assignment.status ? (
+    return isLoading ? (
+        <Loading></Loading>
+    ) : (
         <>
             <Row className="align-items-center">
                 <Col>
@@ -133,41 +139,19 @@ const StudentFormView = () => {
                     <StatusBadge status={assignment.status} />
                 </Col>
             </Row>
-            <Form.Group as={Row} className="my-4">
-                <Col>
-                    <Form.Label column>Assignment Number:</Form.Label>
-                </Col>
-                <Col sm="8" md="8" lg="8">
-                    <DropdownButton
-                        as={ButtonGroup}
-                        id={"assignmentName"}
-                        variant={"info"}
-                        title={`Assignment ${assignment.number}`}
-                        onSelect={(selectedElement) => {
-                            updateAssignment("number", selectedElement);
-                        }}
-                    >
-                        {assignmentEnums.map((assignmentEnum) => (
-                            <Dropdown.Item
-                                key={assignmentEnum.assignmentNum}
-                                eventKey={assignmentEnum.assignmentNum}
-                            >
-                                {assignmentEnum.assignmentNum}
-                            </Dropdown.Item>
-                        ))}
-                    </DropdownButton>
-                </Col>
-            </Form.Group>
             <Form.Group as={Row} className="my-4 align-items-center">
                 <Col>
                     <Form.Label className="mb-0">GitHub URL:</Form.Label>
                 </Col>
                 <Col sm="8" md="8" lg="8">
                     <Form.Control
+                        readOnly={
+                            assignment.status !== assignmentStatuses[0].status
+                        }
                         type="url"
                         id="githubUrl"
                         placeholder="https://github.com/username/reponame"
-                        value={assignment.githubUrl ? assignment.githubUrl : ""}
+                        value={assignment.githubUrl || ""}
                         onChange={(event) =>
                             updateAssignment("githubUrl", event.target.value)
                         }
@@ -183,7 +167,7 @@ const StudentFormView = () => {
                         type="text"
                         id="branch"
                         placeholder="main"
-                        value={assignment.branch ? assignment.branch : ""}
+                        value={assignment.branch || ""}
                         onChange={(event) =>
                             updateAssignment("branch", event.target.value)
                         }
@@ -191,7 +175,8 @@ const StudentFormView = () => {
                 </Col>
             </Form.Group>
             {viewDependOnStatus(assignment.status)}
-        </>) : (<></>);
+        </>
+    );
 };
 
 export default StudentFormView;

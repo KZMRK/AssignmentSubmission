@@ -3,6 +3,8 @@ import {useLocalState} from "../../util/useLocalStorage";
 import {Navigate} from "react-router";
 import ajax from "../../services/fetchService";
 import {UserContext} from "../provider/UserProvider";
+import {Spinner} from "react-bootstrap";
+import Loading from "../loading/Loading";
 
 const PrivateRoute = ({ children }) => {
     const {jwt, setJwt} = useContext(UserContext);
@@ -19,7 +21,7 @@ const PrivateRoute = ({ children }) => {
     }
 
     if (isLoading)
-        return <div>Loading</div>;
+        return <Loading/>
     else if (isValid)
         return children;
     else return <Navigate to="/login"/>;

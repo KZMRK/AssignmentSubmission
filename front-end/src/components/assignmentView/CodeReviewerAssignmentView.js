@@ -1,6 +1,6 @@
-import React, {useEffect, useState, useRef, useContext} from "react";
-import { useLocalState } from "../../util/useLocalStorage";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import ajax from "../../services/fetchService";
+
 import {
     Badge,
     Button,
@@ -10,15 +10,18 @@ import {
     Form,
     Row,
     Dropdown,
-    ButtonGroup,
+    ButtonGroup, Spinner,
 } from "react-bootstrap";
-import {Link, useNavigate} from "react-router-dom";
-import { Navigate } from "react-router";
-import {UserContext} from "../provider/UserProvider";
-import CommentContainer from "../comment/CommentContainer";
+import { UserContext } from "../provider/UserProvider";
+import StatusBadge from "../statusBadge/StatusBadge";
+import Loading from "../loading/Loading";
+import {useNavigate} from "react-router-dom";
+import Chat from "../comment/Chat";
+import SockJS from "sockjs-client"
+import {ChatProvider} from "../provider/ChatProvider";
 
 const CodeReviewerAssignmentView = () => {
-    const {jwt, setJwt} = useContext(UserContext);
+    const { jwt, setJwt } = useContext(UserContext);
     const assignmentId = window.location.href.split("/assignments/")[1];
     const [assignment, setAssignment] = useState({
         status: null,
@@ -26,6 +29,7 @@ const CodeReviewerAssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const prevAssignment = useRef(assignment);
+    const navigate = useNavigate();
 
 
     function updateAssignment(prop, value) {
@@ -37,7 +41,6 @@ const CodeReviewerAssignmentView = () => {
     function save(status) {
         if (status && assignment.status !== status) {
             updateAssignment("status", status);
-            window.location.href="/dashboard";
         }
     }
 
@@ -45,12 +48,13 @@ const CodeReviewerAssignmentView = () => {
         ajax(`/api/assignments/${assignmentId}`, "PUT", jwt, assignment).then(
             (assignment) => {
                 setAssignment(assignment);
+                navigate("/dashboard");
             }
         );
     }
 
     useEffect(() => {
-        if (prevAssignment.current.status !== assignment.status) {
+        if (prevAssignment.current.status && prevAssignment.current.status !== assignment.status) {
             persist();
         }
         prevAssignment.current = assignment;
@@ -63,21 +67,70 @@ const CodeReviewerAssignmentView = () => {
                 setAssignmentEnums(assignmentResponse.assignmentEnums);
                 setAssignmentStatuses(assignmentResponse.assignmentStatusEnums);
             }
-        );
+        ).catch(error => {
+            if (error.message === "Forbidden") {
+                alert("У вас немає доступу до цього ресурсу.");
+            } else {
+                console.log(error.message);
+            }
+        });
     }, []);
 
     if (!assignment.status) {
         return (
-            <div style={{ position: "absolute", left: "0", top: "0" }}>
-                Loading...
-            </div>
+            <Loading/>
         );
+    }
+
+    function showButtonDependsOnStatus(status) {
+        switch (status) {
+            case assignmentStatuses[3].status:
+                return (
+                    <Col>
+                        <Button
+                            className="w-100"
+                            variant="secondary"
+                            size="lg"
+                            onClick={() => save(assignmentStatuses[2].status)}
+                        >
+                            Re-Claim
+                        </Button>
+                    </Col>
+                );
+            case assignmentStatuses[2].status:
+            case assignmentStatuses[5].status:
+                return (
+                    <>
+                        <Col>
+                            <Button
+                                size="lg"
+                                onClick={() => save(assignmentStatuses[4].status)}
+                                className="w-100"
+                            >
+                                Complete Review
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button
+                                className="w-100"
+                                variant="danger"
+                                size="lg"
+                                onClick={() => save(assignmentStatuses[3].status)}
+                            >
+                                Reject Assignment
+                            </Button>
+                        </Col>
+                    </>
+                );
+            default:
+                return <></>;
+        }
     }
 
     return (
         <Container
             className="mt-5 justify-content-center"
-            style={{ width: "40rem" }}
+            style={{ maxWidth: "40rem" }}
         >
             {assignment ? (
                 <>
@@ -89,9 +142,7 @@ const CodeReviewerAssignmentView = () => {
                             </h1>
                         </Col>
                         <Col className="text-end">
-                            <Badge pill bg="info" style={{ fontSize: "1em" }}>
-                                {assignment.status}
-                            </Badge>{" "}
+                            <StatusBadge status={assignment.status} />
                         </Col>
                     </Row>
                     <Form.Group as={Row} className="my-4 align-items-center">
@@ -155,36 +206,18 @@ const CodeReviewerAssignmentView = () => {
                             />
                         </Col>
                     </Form.Group>
-                    <Button
-                        size="lg"
-                        onClick={() => save(assignmentStatuses[4].status)}
-                    >
-                        Complete Review
-                    </Button>
-                    {assignment.status === "Needs Update" ? (
-                        <Button
-                            className="mx-2"
-                            variant="secondary"
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[2].status)}
-                        >
-                            Re-Claim
-                        </Button>
-                    ) : (
-                        <Button
-                            className="mx-2"
-                            variant="danger"
-                            size="lg"
-                            onClick={() => save(assignmentStatuses[3].status)}
-                        >
-                            Reject Assignment
-                        </Button>
-                    )}
+                    <Row className="gap-3">
+                        {showButtonDependsOnStatus(assignment.status)}
+                        <Col>
+                            <ChatProvider>
+                                <Chat assignment={assignment} />
+                            </ChatProvider>
+                        </Col>
+                    </Row>
                 </>
             ) : (
                 <></>
             )}
-            <CommentContainer assignment={assignment}/>
         </Container>
     );
 };

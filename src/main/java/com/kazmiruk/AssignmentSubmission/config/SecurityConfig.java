@@ -1,65 +1,46 @@
 package com.kazmiruk.AssignmentSubmission.config;
 
+
+import com.kazmiruk.AssignmentSubmission.enums.Role;
 import com.kazmiruk.AssignmentSubmission.filter.JwtFilter;
-import com.kazmiruk.AssignmentSubmission.util.CustomPasswordEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletResponse;
-
-@EnableWebSecurity
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private CustomPasswordEncoder customPasswordEncoder;
-
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(customPasswordEncoder.getPasswordEncoder());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http = http.csrf().disable().cors().disable();
-        http = http
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf()
+                .disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/websocket/**").permitAll()
+                .requestMatchers("/api/assignments/**", "/api/comments/**")
+                    .hasAnyAuthority(Role.ROLE_STUDENT.name(), Role.ROLE_CODE_REVIEWER.name())
+                .requestMatchers("/api/users/**").hasAuthority(Role.ROLE_ADMIN.name())
+                .anyRequest()
+                .authenticated()
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http = http.exceptionHandling()
-                .authenticationEntryPoint((request, response, e) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-                })
-                .and();
-
-         http.authorizeRequests()
-                 .antMatchers("/api/auth/**")
-                 .permitAll()
-                 .anyRequest()
-                 .authenticated();
-
-         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
-
 }

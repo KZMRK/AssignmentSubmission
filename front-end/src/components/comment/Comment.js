@@ -9,7 +9,7 @@ const Comment = (props) => {
     const { jwt, setJwt } = useContext(UserContext);
     const decodedJwt = jwt_decode(jwt);
     const { id, createdAt, createdBy, text } = props.comment;
-    const { emitDeleteComment, emitEditComment } = props;
+    const { emitEditComment } = props;
     const [commentRelativeTime, setCommentRelativeTime] = useState("");
 
     useEffect(() => {
@@ -28,18 +28,13 @@ const Comment = (props) => {
             <div className="comment-bubble">
                 <div className="d-flex justify-content-between">
                     <div style={{ fontWeight: "bold" }}>
-                        {createdBy.username}
+                        {`${createdBy.firstName} ${createdBy.lastName}`}
                     </div>
                     {decodedJwt.sub === createdBy.username ? (
                         <div>
                             <AiFillEdit
                                 role="button"
                                 onClick={() => emitEditComment(id)}
-                                style={{ marginRight: "0.6em" }}
-                            />
-                            <AiTwotoneDelete
-                                role="button"
-                                onClick={() => emitDeleteComment(id)}
                             />
                         </div>
                     ) : (

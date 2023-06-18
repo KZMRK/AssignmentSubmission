@@ -1,27 +1,37 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {
-    Button,
-    Col,
-    Container,
+    Button, Col, Container,
     FloatingLabel,
-    Form,
-    Row,
+    Form, Row
 } from "react-bootstrap";
 import Comment from "./Comment";
 import ajax from "../../services/fetchService";
 import { UserContext } from "../provider/UserProvider";
-import { useInterval } from "../../util/useInterval";
+import jwt_decode from "jwt-decode";
+import SockJS from "sockjs-client";
+import {Stomp} from "@stomp/stompjs";
+import {useInterval} from "../../util/useInterval";
 import dayjs from "dayjs";
+import Loading from "../loading/Loading";
+import {ChatContext} from "../provider/ChatProvider";
 
 const CommentContainer = (props) => {
     const { jwt, setJwt } = useContext(UserContext);
     const assignment = props.assignment;
+    const userEmail = jwt_decode(jwt).sub;
 
-    const [comment, setComment] = useState({
+    const emptyComment = {
         assignment: assignment,
         text: "",
-    });
+        createdBy: {
+            email: userEmail
+        }
+    }
+
+    const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
+    const [isConnected, setIsConnected] = useState(false);
+    const {stompClient, setStompClient} = useContext(ChatContext);
 
     useEffect(() => {
         ajax(`/api/comments?assignmentId=${assignment.id}`, "GET", jwt).then(
@@ -29,27 +39,50 @@ const CommentContainer = (props) => {
                 setComments(commentsData);
             }
         );
+        if (!isConnected) {
+            connect();
+        }
     }, []);
+
+    const handleMessageSend = () => {
+        if (stompClient) {
+            stompClient.send("/app/private-message", {}, JSON.stringify(comment));
+        }
+    };
 
     useEffect(() => {
         updateComment("assignment", assignment);
     }, [assignment]);
 
     function updateComment(prop, value) {
-        const newComment = { ...comment };
-        newComment[prop] = value;
-        setComment(newComment);
+        setComment((prevComment) => ({
+            ...prevComment,
+            [prop]: value,
+        }));
     }
 
-    function handleDeleteComment(commentId) {
-        ajax(`/api/comments/${commentId}`, "DELETE", jwt).then((deletedId) => {
-            const commentsCopy = [...comments];
-            const deletedCommentIndex = commentsCopy.findIndex(
-                (comment) => comment.id === deletedId
-            );
-            commentsCopy.splice(deletedCommentIndex, 1);
-            setComments(commentsCopy);
+    function connect() {
+        const client = Stomp.over(() => new SockJS('/websocket'));
+        client.connect({}, (frame) => {
+            client.subscribe(`/user/${userEmail}/private`, (message) => {
+                const receivedComment = JSON.parse(message.body);
+                setComments((prevComments) => {
+                    const updatedComments = [...prevComments];
+                    const editedCommentIndex = updatedComments.findIndex(
+                        el => el.id === receivedComment.id
+                    );
+                    if (editedCommentIndex !== -1) {
+                        console.log(editedCommentIndex)
+                        updatedComments[editedCommentIndex] = receivedComment
+                    } else {
+                        updatedComments.unshift(receivedComment)
+                    }
+                    return updatedComments;
+                })
+            });
+            setIsConnected(true);
         });
+        setStompClient(client);
     }
 
     function handleEditComment(commentId) {
@@ -57,7 +90,7 @@ const CommentContainer = (props) => {
         setComment(commentToEdit);
     }
 
-    useInterval(() => {
+    /*useInterval(() => {
         updateCommentTimeDisplay();
     }, 1000 * 61);
 
@@ -67,87 +100,71 @@ const CommentContainer = (props) => {
             (comment) => (comment.createdAt = dayjs(comment.createdAt))
         );
         setComments(commentsCopy);
-    }
-
-    function submitComment() {
-        const isCommentInDatabase =
-            comments && comments.some((el) => el.id === comment.id);
-        if (isCommentInDatabase) {
-            ajax(`/api/comments/${comment.id}`, "PUT", jwt, comment).then(
-                (editedComment) => {
-                    const newComments = [...comments];
-                    const editedCommentIndex = comments.findIndex(
-                        (el) => el.id === editedComment.id
-                    );
-                    newComments[editedCommentIndex] = editedComment;
-                    setComments(newComments);
-                }
-            );
-        } else {
-            ajax("/api/comments", "POST", jwt, comment).then((data) => {
-                const newComments = [...comments];
-                newComments.push(data);
-                setComments(newComments);
-                const newComment = { ...comment };
-                newComment.text = "";
-                setComment(newComment);
-            });
-        }
-    }
+    }*/
 
     function clearTextArea() {
-        const copyComment = { ...comment };
-        copyComment.text = "";
-        setComment(copyComment);
+        setComment(emptyComment);
     }
 
     return (
+        !isConnected ? (<Loading/>) : (
         <>
-            <div>
+            <div className="position-static bottom-0">
                 <FloatingLabel controlId="floatingTextarea2" label="Comments">
                     <Form.Control
                         as="textarea"
                         placeholder="Leave a comment here"
-                        style={{ height: "100px" }}
+                        style={{ height: "100px", resize: "none" }}
                         onChange={(e) => updateComment("text", e.target.value)}
                         value={comment.text}
                     />
                 </FloatingLabel>
-                <div>
-                    <Button onClick={() => submitComment()}>
-                        Post Comment
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => {
-                            clearTextArea();
-                        }}
-                    >
-                        Clear
-                    </Button>
+                <div  className="mt-2">
+                    <Row>
+                        <Col className="d-flex justify-content-center">
+                            <Button className="w-100" onClick={() => {
+                                handleMessageSend();
+                                clearTextArea();
+                            }}>
+                                Post Comment
+                            </Button>
+                        </Col>
+                        <Col  className="d-flex justify-content-center">
+                            <Button
+                                variant="secondary"
+                                className="w-100"
+                                onClick={() => {
+                                    clearTextArea();
+                                }}
+                            >
+                                Clear
+                            </Button>
+                        </Col>
+                    </Row>
                 </div>
             </div>
             <div>
                 {comments ? (
                     comments
-                        .sort((comment1, comment2) => {
-                            if (comment1.createdAt > comment2.createdAt)
-                                return -1;
-                            else return 1;
-                        })
-                        .map((comment) => (
-                            <Comment
-                                key={comment.id}
-                                comment={comment}
-                                emitDeleteComment={handleDeleteComment}
-                                emitEditComment={handleEditComment}
-                            />
-                        ))
+                    .sort((comment1, comment2) => {
+                        if (comment1.createdAt > comment2.createdAt)
+                            return -1;
+                        else
+                            return 1;
+                    })
+                    .map((comment, index) => (
+                        <Comment
+                            key={index}
+                            comment={comment}
+                            emitEditComment={handleEditComment}
+                        />
+                    ))
                 ) : (
                     <></>
                 )}
             </div>
         </>
+        )
     );
 };
 

@@ -3,8 +3,8 @@ package com.kazmiruk.AssignmentSubmission.dto;
 import lombok.Data;
 
 @Data
-public class AuthCredentialsRequest {
+public class AuthenticationRequest {
 
-    private String username;
+    private String email;
     private String password;
 }

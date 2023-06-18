@@ -1,7 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
-import Dashboard from "./components/dashboard/Dashboard";
-import Home from "./components/home/Home";
+import StudentDashboard from "./components/dashboard/StudentDashboard";
 import Login from "./components/login/Login";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import AssignmentView from "./components/assignmentView/AssignmentView";
@@ -10,18 +9,20 @@ import { useContext, useState } from "react";
 import jwt_decode from "jwt-decode";
 import CodeReviewerDashboard from "./components/dashboard/CodeReviewerDashboard";
 import CodeReviewerAssignmentView from "./components/assignmentView/CodeReviewerAssignmentView";
+import AdminDashboard from "./components/dashboard/adminDashboard/AdminDashboard";
 import { UserContext } from "./components/provider/UserProvider";
+import UserView from "./components/assignmentView/UserView";
 
 function App() {
     const { jwt, setJwt } = useContext(UserContext);
-    const [roles, setRoles] = useState(getRoleFromJWT());
+    const [role, setRole] = useState(getRoleFromJWT());
 
     function getRoleFromJWT() {
         if (jwt) {
             const decodedJwt = jwt_decode(jwt);
-            return decodedJwt.authorities;
+            return decodedJwt.role;
         }
-        return [];
+        return "";
     }
 
     return (
@@ -30,10 +31,12 @@ function App() {
                 path="/dashboard"
                 element={
                     <PrivateRoute>
-                        {roles.some((role) => role === "ROLE_CODE_REVIEWER") ? (
+                        {(role === "ROLE_CODE_REVIEWER") ? (
                             <CodeReviewerDashboard />
+                        ) : (role === "ROLE_STUDENT") ? (
+                            <StudentDashboard />
                         ) : (
-                            <Dashboard />
+                            <AdminDashboard />
                         )}
                     </PrivateRoute>
                 }
@@ -42,7 +45,7 @@ function App() {
                 path="/assignments/:assignmentId"
                 element={
                     <PrivateRoute>
-                        {roles.some((role) => role === "ROLE_CODE_REVIEWER") ? (
+                        {(role === "ROLE_CODE_REVIEWER") ? (
                             <CodeReviewerAssignmentView />
                         ) : (
                             <AssignmentView />
@@ -50,7 +53,16 @@ function App() {
                     </PrivateRoute>
                 }
             />
-            <Route path="/" element={<Home />} />
+            <Route
+                path="/users/:userId"
+                element={
+                    <PrivateRoute>
+                        <UserView/>
+                    </PrivateRoute>
+                }
+            >
+
+            </Route>
             <Route path="login" element={<Login />} />
         </Routes>
     );
