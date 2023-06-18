@@ -1,6 +1,6 @@
 create database assignment_submission_db;
 
-create table _user
+create table assignment_submission_db._user
 (
     id         bigint auto_increment
         primary key,
@@ -11,7 +11,7 @@ create table _user
     role       enum ('ROLE_ADMIN', 'ROLE_CODE_REVIEWER', 'ROLE_STUDENT') null
 );
 
-create table assignment
+create table assignment_submission_db.assignment
 (
     id                    bigint auto_increment
         primary key,
@@ -28,7 +28,7 @@ create table assignment
         foreign key (user_id) references _user (id)
 );
 
-create table comments
+create table assignment_submission_db.comments
 (
     id            bigint auto_increment
         primary key,
