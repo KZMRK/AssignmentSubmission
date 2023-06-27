@@ -152,17 +152,16 @@ const CodeReviewerAssignmentView = () => {
                             </Form.Label>
                         </Col>
                         <Col sm="8" md="8" lg="8">
-                            <Form.Control
+                            <a target="_blank" href={assignment.githubUrl}>{assignment.githubUrl}</a>
+                            {/*<Form.Control
                                 type="url"
                                 id="githubUrl"
                                 placeholder="https://github.com/username/reponame"
                                 value={
-                                    assignment.githubUrl
-                                        ? assignment.githubUrl
-                                        : ""
+
                                 }
                                 readOnly
-                            />
+                            />*/}
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3 align-items-center">

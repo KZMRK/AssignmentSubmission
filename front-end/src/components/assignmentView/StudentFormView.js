@@ -93,12 +93,13 @@ const StudentFormView = () => {
                                 </Form.Label>
                             </Col>
                             <Col sm="8" md="8" lg="8">
-                                <Form.Control
+                                <a target="_blank" href={assignment.codeReviewVideoUrl}>{assignment.codeReviewVideoUrl}</a>
+                                {/*<Form.Control
                                     type="url"
                                     id="codeReviewVideoUrl"
                                     value={assignment.codeReviewVideoUrl || ""}
                                     readOnly
-                                />
+                                />*/}
                             </Col>
                         </Form.Group>
                     ) : <></>}
