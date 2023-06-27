@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 const Navigation = () => {
     const { jwt, setJwt } = useContext(UserContext);
     const [username, setUsername] = useState(jwt ? jwt_decode(jwt).fullName : "");
+    const [role, setRole] = useState(jwt ? jwt_decode(jwt).role : "");
     const navigate = useNavigate();
 
     return (
@@ -31,9 +32,16 @@ const Navigation = () => {
                             <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         </Nav>
                         <Nav>
-                            {jwt ? (
+                            {jwt ?(
+
                                 <>
-                                    <NavDropdown title={`Signed in as: ${username}`} id="collasible-nav-dropdow">
+                                    <NavDropdown title={`Signed in as:    
+                                    
+                                     ${username}
+                                     (${role === "ROLE_STUDENT" ? "student" : role === "ROLE_CODE_REVIEWER" ? "reviewer"
+                                        : "admin"
+                                    })
+                                     `} id="collasible-nav-dropdow">
                                         <NavDropdown.Item onClick={() => {
                                             setJwt(null);
                                             navigate("/login");
