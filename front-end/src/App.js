@@ -12,6 +12,7 @@ import CodeReviewerAssignmentView from "./components/assignmentView/CodeReviewer
 import AdminDashboard from "./components/dashboard/adminDashboard/AdminDashboard";
 import { UserContext } from "./components/provider/UserProvider";
 import UserView from "./components/assignmentView/UserView";
+import {PopoutProvider} from "./components/provider/PopoutProvider";
 
 function App() {
     const { jwt, setJwt } = useContext(UserContext);
@@ -57,7 +58,9 @@ function App() {
                 path="/users/:userId"
                 element={
                     <PrivateRoute>
-                        <UserView/>
+                        <PopoutProvider>
+                            <UserView/>
+                        </PopoutProvider>
                     </PrivateRoute>
                 }
             >
