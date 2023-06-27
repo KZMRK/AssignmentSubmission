@@ -45,9 +45,13 @@ public class AssignmentController {
             @RequestBody Assignment assignment,
             @AuthenticationPrincipal User user
             ) {
-        if (assignment.getCodeReviewer() == null && user.getRole() == Role.ROLE_CODE_REVIEWER) {
+        if (user.getRole() == Role.ROLE_CODE_REVIEWER) {
+            if (!assignmentService.isAssignmentHasCodeReviewer(assignment.getId())) {
                 assignment.setCodeReviewer(user);
                 assignment.setStatus(AssignmentStatusEnum.IN_REVIEW.getStatus());
+            } else if (!user.getId().equals(assignment.getCodeReviewer().getId())) {
+                return ResponseEntity.badRequest().build();
+            }
         }
         Assignment updatedAssignment = assignmentService.save(assignment);
         return ResponseEntity.ok(updatedAssignment);

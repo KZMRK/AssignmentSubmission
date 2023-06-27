@@ -6,7 +6,6 @@ import com.kazmiruk.AssignmentSubmission.enums.AssignmentStatusEnum;
 import com.kazmiruk.AssignmentSubmission.enums.Role;
 import com.kazmiruk.AssignmentSubmission.repository.AssignmentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -53,5 +52,14 @@ public class AssignmentService {
 
     public Assignment save(Assignment assignment) {
         return assignmentRepository.save(assignment);
+    }
+
+    public boolean isAssignmentHasCodeReviewer(long id) {
+        Optional<Assignment> assignmentOpt = assignmentRepository.findById(id);
+        if (assignmentOpt.isEmpty())
+            return false;
+
+        Assignment assignment = assignmentOpt.get();
+        return assignment.getCodeReviewer() != null;
     }
 }

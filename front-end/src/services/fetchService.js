@@ -17,9 +17,9 @@ function ajax (url, requestMethod, jwt, requestBody) {
 
     return fetch(url, fetchData).then(response => {
         if (response.status === 200) {
-            return response.json()
+            return response.json();
         } else if (response.status === 403) {
-            throw new Error("Forbidden")
+            throw new Error("Forbidden");
         } else {
             throw new Error("Request Error");
         }

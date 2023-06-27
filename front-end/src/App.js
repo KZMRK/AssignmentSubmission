@@ -33,7 +33,9 @@ function App() {
                 element={
                     <PrivateRoute>
                         {(role === "ROLE_CODE_REVIEWER") ? (
-                            <CodeReviewerDashboard />
+                            <PopoutProvider>
+                                <CodeReviewerDashboard />
+                            </PopoutProvider>
                         ) : (role === "ROLE_STUDENT") ? (
                             <StudentDashboard />
                         ) : (
